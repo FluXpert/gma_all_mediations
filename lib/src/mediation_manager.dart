@@ -24,6 +24,7 @@ import 'package:gma_all_mediations/src/logger.dart';
 import 'package:gma_mediation_applovin/gma_mediation_applovin.dart';
 import 'package:gma_mediation_chartboost/gma_mediation_chartboost.dart';
 import 'package:gma_mediation_dtexchange/gma_mediation_dtexchange.dart';
+import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
 // import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
 // import 'package:gma_mediation_ironsource/gma_mediation_ironsource.dart';
 // import 'package:gma_mediation_liftoffmonetize/gma_mediation_liftoffmonetize.dart';
@@ -85,7 +86,7 @@ class MediationManager {
     // _applyIronSourceConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     // _applyLiftoffConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     // _applyMetaConsent(hasConsent: hasConsent, doNotSell: doNotSell);
-    // _applyInMobiConsent(hasConsent: hasConsent, doNotSell: doNotSell);
+    _applyInMobiConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     // _applyMintegralConsent(hasConsent: hasConsent, doNotSell: doNotSell);
 
     GmaLogger.success('Consent applied to all active mediation adapters.');
@@ -282,7 +283,6 @@ class MediationManager {
     }
   }
 
-
   // /// Propagates consent to the **IronSource (LevelPlay)** mediation adapter.
   // ///
   // /// See: https://developers.google.com/admob/flutter/mediation/ironsource
@@ -325,16 +325,46 @@ class MediationManager {
   //   }
   // }
 
-  // /// Propagates consent to the **InMobi** mediation adapter.
-  // ///
-  // /// See: https://developers.google.com/admob/flutter/mediation/inmobi
-  // void _applyInMobiConsent({required bool hasConsent, required bool doNotSell}) {
-  //   try {
-  //     GmaLogger.info('InMobi — consent applied.');
-  //   } catch (e, st) {
-  //     GmaLogger.error('InMobi consent error', e, st);
-  //   }
-  // }
+  /// Propagates consent to the **InMobi** mediation adapter.
+  ///
+  /// The `gma_mediation_inmobi` Flutter class is intentionally empty (same
+  /// pattern as Chartboost). Instantiating it here registers the InMobi
+  /// adapter with the Google Mobile Ads mediation chain. No Dart-level consent
+  /// setters are exposed — consent flows via the GMA privacy APIs and the iOS
+  /// App Tracking Transparency (ATT) status.
+  ///
+  /// ---
+  ///
+  /// ### iOS 14+ requirements (per InMobi guidelines)
+  ///
+  /// | Requirement | How it is handled |
+  /// |-------------|-------------------|
+  /// | **A. Latest SDK** | Managed by the `gma_mediation_inmobi` pub package version — keep it updated in `pubspec.yaml`. |
+  /// | **B. SKAdNetwork attribution** | Handled automatically by the InMobi adapter once SKAN IDs are in `Info.plist` (see C). No code change needed. |
+  /// | **C. SKAdNetwork IDs in Info.plist** | ⚠️ **Manual step** — copy the SKAN ID list from [https://www.inmobi.com/skadnetworkids.xml](https://www.inmobi.com/skadnetworkids.xml) into `Info.plist`. See README for details. |
+  /// | **D. ATT prompt** | ✅ **Automatically handled** by [GmaAllMediations._requestAppTrackingTransparency] when [GmaMediationConfig.enableATT] is `true`. No extra work needed. |
+  /// | **E. iOS 14 demand guide** | Informational — no code action required. InMobi adapts its demand pipeline automatically. |
+  ///
+  /// ### Revenue impact 💶
+  /// InMobi has strong demand in Asia-Pacific, the Middle East, and emerging
+  /// markets. Ensuring ATT is requested (already done by this package) and
+  /// SKAN IDs are in place are the two highest-impact steps for InMobi eCPMs
+  /// on iOS.
+  ///
+  /// See: https://developers.google.com/admob/flutter/mediation/inmobi
+  /// See: https://support.inmobi.com/monetize/sdk-documentation/ios-guidelines/preparing-for-ios-14
+  void _applyInMobiConsent({required bool hasConsent, required bool doNotSell}) {
+    try {
+      // Registers the InMobi adapter with the GMA mediation chain.
+      // Consent and ATT signals are propagated automatically via the GMA SDK
+      // and the ATT flow already executed in GmaAllMediations._requestAppTrackingTransparency().
+      GmaMediationInMobi();
+      GmaLogger.success('InMobi — adapter registered. ATT handled by package.');
+    } catch (e, st) {
+      GmaLogger.error('InMobi consent error', e, st);
+    }
+  }
+
 
   // /// Propagates consent to the **Mintegral** mediation adapter.
   // ///
