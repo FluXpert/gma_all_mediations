@@ -38,3 +38,27 @@ B. SKAdNetwork attribution — handled automatically by the adapter once SKAN ID
 C. SKAdNetwork IDs in Info.plist — ⚠️ MANUAL: copy from https://www.inmobi.com/skadnetworkids.xml into Info.plist
 D. ATT prompt — ✅ Auto-handled by this package (GmaMediationConfig.enableATT = true)
 E. iOS 14 demand guide — informational only, no code action needed.
+
+
+# IronSource (LevelPlay) Setup: https://developers.google.com/admob/flutter/mediation/ironsource
+GDPR/CCPA consent: ✅ Auto-handled by this package (setConsent + setDoNotSell).
+ProGuard rules: ✅ Auto-applied via consumerProguardFiles (no proguard-user.txt edits needed).
+Activity lifecycle (onResume/onPause): ✅ Auto-handled by IronSourceLifecycleObserver (no MainActivity changes needed).
+
+## Android — Only 1 manual step
+
+### Maven repositories ⚠️ MANUAL — add to android/settings.gradle
+```groovy
+dependencyResolutionManagement {
+  repositories {
+    // ... existing repos ...
+    maven { url = uri("https://android-sdk.is.com/") }
+    maven { url = uri("https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea") }
+  }
+}
+```
+Note: Must be in settings.gradle (dependencyResolutionManagement), NOT build.gradle allprojects.
+Modern Flutter Android projects ignore plugin-declared maven repos at the host level.
+
+## iOS — No extra setup required.
+

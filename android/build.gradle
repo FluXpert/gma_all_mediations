@@ -31,6 +31,9 @@ android {
     defaultConfig {
         minSdkVersion 21
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // Automatically applies IronSource ProGuard rules to the host app.
+        // No manual proguard-user.txt edits are needed by the consumer.
+        consumerProguardFiles 'proguard-rules.pro'
     }
 
     compileOptions {

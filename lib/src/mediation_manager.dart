@@ -25,6 +25,7 @@ import 'package:gma_mediation_applovin/gma_mediation_applovin.dart';
 import 'package:gma_mediation_chartboost/gma_mediation_chartboost.dart';
 import 'package:gma_mediation_dtexchange/gma_mediation_dtexchange.dart';
 import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
+import 'package:gma_mediation_ironsource/gma_mediation_ironsource.dart';
 // import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
 // import 'package:gma_mediation_ironsource/gma_mediation_ironsource.dart';
 // import 'package:gma_mediation_liftoffmonetize/gma_mediation_liftoffmonetize.dart';
@@ -83,7 +84,7 @@ class MediationManager {
     _applyUnityConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     await _applyChartboostConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyDTExchange(hasConsent: hasConsent, doNotSell: doNotSell);
-    // _applyIronSourceConsent(hasConsent: hasConsent, doNotSell: doNotSell);
+    await _applyIronSourceConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     // _applyLiftoffConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     // _applyMetaConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyInMobiConsent(hasConsent: hasConsent, doNotSell: doNotSell);
@@ -283,18 +284,67 @@ class MediationManager {
     }
   }
 
-  // /// Propagates consent to the **IronSource (LevelPlay)** mediation adapter.
-  // ///
-  // /// See: https://developers.google.com/admob/flutter/mediation/ironsource
-  // void _applyIronSourceConsent({required bool hasConsent, required bool doNotSell}) {
-  //   try {
-  //     GmaMediationIronsource().setConsent(hasConsent);
-  //     GmaMediationIronsource().setDoNotSell(doNotSell);
-  //     GmaLogger.info('IronSource — consent applied.');
-  //   } catch (e, st) {
-  //     GmaLogger.error('IronSource consent error', e, st);
-  //   }
-  // }
+  /// Propagates GDPR and CCPA consent to the **IronSource (LevelPlay)**
+  /// mediation adapter.
+  ///
+  /// Unlike most adapters, IronSource exposes real Dart-level consent setters
+  /// via the `gma_mediation_ironsource` package:
+  ///
+  /// * `setConsent(bool)` — GDPR: `true` = user consented, `false` = not consented.
+  /// * `setDoNotSell(bool)` — CCPA: `true` = Do Not Sell (opt-out), `false` = permitted.
+  ///
+  /// Both are mapped directly from the resolved [hasConsent] and [doNotSell]
+  /// values and are called automatically before the first ad is loaded.
+  ///
+  /// ---
+  ///
+  /// ### Android setup summary
+  ///
+  /// | Requirement | Status |
+  /// |-------------|--------|
+  /// | GDPR / CCPA consent (`setConsent`, `setDoNotSell`) | ✅ Auto — called here |
+  /// | ProGuard rules | ✅ Auto — `consumerProguardFiles` in `android/build.gradle` |
+  /// | Activity lifecycle (`onResume` / `onPause`) | ✅ Auto — `IronSourceLifecycleObserver` registered via `Application.ActivityLifecycleCallbacks` + reflection |
+  /// | Maven repository (`https://android-sdk.is.com/`) | ⚠️ Manual — add to host app's `android/settings.gradle` |
+  ///
+  /// ### ⚠️ Only manual step: Maven repository
+  /// Modern Flutter Android projects use `dependencyResolutionManagement` in
+  /// `settings.gradle`, which cannot be injected by a plugin. Add the following
+  /// to your host app's `android/settings.gradle`:
+  /// ```groovy
+  /// dependencyResolutionManagement {
+  ///   repositories {
+  ///     // ... existing repos ...
+  ///     maven { url = uri("https://android-sdk.is.com/") }
+  ///     maven { url = uri("https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea") }
+  ///   }
+  /// }
+  /// ```
+  ///
+  /// ### Revenue impact 💶
+  /// IronSource LevelPlay is one of the highest-performing networks for
+  /// rewarded video and interstitials globally. All lifecycle and consent
+  /// signals are now wired up automatically by this package.
+  ///
+  /// See: https://developers.google.com/admob/flutter/mediation/ironsource
+
+  Future<void> _applyIronSourceConsent({required bool hasConsent, required bool doNotSell}) async {
+    try {
+      // GDPR: true = user has consented to personalised ads.
+      await GmaMediationIronsource().setConsent(hasConsent);
+
+      // CCPA: true = Do Not Sell (user opted out of sale of personal data).
+      await GmaMediationIronsource().setDoNotSell(doNotSell);
+
+      GmaLogger.success(
+        'IronSource — consent applied. '
+        'hasConsent: $hasConsent, doNotSell: $doNotSell',
+      );
+    } catch (e, st) {
+      GmaLogger.error('IronSource consent error', e, st);
+    }
+  }
+
 
   // /// Propagates consent to the **Liftoff Monetize (Vungle)** adapter.
   // ///
@@ -364,7 +414,6 @@ class MediationManager {
       GmaLogger.error('InMobi consent error', e, st);
     }
   }
-
 
   // /// Propagates consent to the **Mintegral** mediation adapter.
   // ///
