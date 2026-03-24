@@ -20,16 +20,15 @@
 /// ────────────────────────────────────────────────────────────────────────────
 library;
 
-// ── Un-comment imports below as you add mediation partners ──────────────────
+import 'package:gma_all_mediations/src/logger.dart';
+import 'package:gma_mediation_applovin/gma_mediation_applovin.dart';
+import 'package:gma_mediation_chartboost/gma_mediation_chartboost.dart';
 // import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
 // import 'package:gma_mediation_ironsource/gma_mediation_ironsource.dart';
 // import 'package:gma_mediation_liftoffmonetize/gma_mediation_liftoffmonetize.dart';
 // import 'package:gma_mediation_meta/gma_mediation_meta.dart';
 // import 'package:gma_mediation_mintegral/gma_mediation_mintegral.dart';
-// import 'package:gma_mediation_unity/gma_mediation_unity.dart';
-
-import 'package:gma_all_mediations/src/logger.dart';
-import 'package:gma_mediation_applovin/gma_mediation_applovin.dart';
+import 'package:gma_mediation_unity/gma_mediation_unity.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart' show ConsentInformation, ConsentStatus;
 
 /// Manages consent propagation to all active mediation adapters.
@@ -77,9 +76,8 @@ class MediationManager {
     );
 
     _applyAppLovinConsent(hasConsent: hasConsent, doNotSell: doNotSell);
-
-    // ── Add new adapters below as you integrate them ───────────────────────
-    // _applyUnityConsent(hasConsent: hasConsent, doNotSell: doNotSell);
+    _applyUnityConsent(hasConsent: hasConsent, doNotSell: doNotSell);
+    _applyChartboostConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     // _applyIronSourceConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     // _applyLiftoffConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     // _applyMetaConsent(hasConsent: hasConsent, doNotSell: doNotSell);
@@ -139,21 +137,30 @@ class MediationManager {
   // ── Template methods for future adapters ──────────────────────────────────
   // Un-comment and fill in when you add the corresponding package.
 
-  // /// Propagates consent to the **Unity Ads** mediation adapter.
-  // ///
-  // /// Unity LevelPlay is a top performer for gaming apps with rewarded-video
-  // /// inventory. GDPR and CCPA must both be set separately.
-  // ///
-  // /// See: https://developers.google.com/admob/flutter/mediation/unity
-  // void _applyUnityConsent({required bool hasConsent, required bool doNotSell}) {
-  //   try {
-  //     GmaMediationUnity().setGDPRConsent(hasConsent);
-  //     GmaMediationUnity().setCCPAConsent(!doNotSell);
-  //     GmaLogger.info('Unity Ads — consent applied.');
-  //   } catch (e, st) {
-  //     GmaLogger.error('Unity consent error', e, st);
-  //   }
-  // }
+  /// Propagates consent to the **Unity Ads** mediation adapter.
+  ///
+  /// Unity LevelPlay is a top performer for gaming apps with rewarded-video
+  /// inventory. GDPR and CCPA must both be set separately.
+  ///
+  /// See: https://developers.google.com/admob/flutter/mediation/unity
+  void _applyUnityConsent({required bool hasConsent, required bool doNotSell}) {
+    try {
+      GmaMediationUnity().setGDPRConsent(hasConsent);
+      GmaMediationUnity().setCCPAConsent(!doNotSell);
+      GmaLogger.info('Unity Ads — consent applied.');
+    } catch (e, st) {
+      GmaLogger.error('Unity consent error', e, st);
+    }
+  }
+
+  void _applyChartboostConsent({required bool hasConsent, required bool doNotSell}) {
+    try {
+      GmaMediationChartboost();
+      GmaLogger.info('Chartboost — consent applied.');
+    } catch (e, st) {
+      GmaLogger.error('Chartboost consent error', e, st);
+    }
+  }
 
   // /// Propagates consent to the **IronSource (LevelPlay)** mediation adapter.
   // ///
