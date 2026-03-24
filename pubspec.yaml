@@ -17,7 +17,7 @@ dependencies:
   gma_mediation_inmobi: ^2.0.1
   gma_mediation_ironsource: ^2.3.0
   gma_mediation_unity: ^1.6.5
-  google_mobile_ads: any
+  google_mobile_ads: ^7.0.0
 
 dev_dependencies:
   flutter_test:
