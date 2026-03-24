@@ -23,6 +23,7 @@ library;
 import 'package:gma_all_mediations/src/logger.dart';
 import 'package:gma_mediation_applovin/gma_mediation_applovin.dart';
 import 'package:gma_mediation_chartboost/gma_mediation_chartboost.dart';
+import 'package:gma_mediation_dtexchange/gma_mediation_dtexchange.dart';
 // import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
 // import 'package:gma_mediation_ironsource/gma_mediation_ironsource.dart';
 // import 'package:gma_mediation_liftoffmonetize/gma_mediation_liftoffmonetize.dart';
@@ -30,6 +31,8 @@ import 'package:gma_mediation_chartboost/gma_mediation_chartboost.dart';
 // import 'package:gma_mediation_mintegral/gma_mediation_mintegral.dart';
 import 'package:gma_mediation_unity/gma_mediation_unity.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart' show ConsentInformation, ConsentStatus;
+
+import 'chartboost_consent_channel.dart';
 
 /// Manages consent propagation to all active mediation adapters.
 ///
@@ -77,7 +80,8 @@ class MediationManager {
 
     _applyAppLovinConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyUnityConsent(hasConsent: hasConsent, doNotSell: doNotSell);
-    _applyChartboostConsent(hasConsent: hasConsent, doNotSell: doNotSell);
+    await _applyChartboostConsent(hasConsent: hasConsent, doNotSell: doNotSell);
+    _applyDTExchange(hasConsent: hasConsent, doNotSell: doNotSell);
     // _applyIronSourceConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     // _applyLiftoffConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     // _applyMetaConsent(hasConsent: hasConsent, doNotSell: doNotSell);
@@ -153,14 +157,131 @@ class MediationManager {
     }
   }
 
-  void _applyChartboostConsent({required bool hasConsent, required bool doNotSell}) {
+  /// Propagates GDPR / CCPA consent to the **Chartboost** SDK natively.
+  ///
+  /// ### How it works
+  /// The `gma_mediation_chartboost` Flutter package intentionally exposes no
+  /// Dart-level consent API — `GmaMediationChartboost` is an empty class used
+  /// only for platform compatibility. This method bridges that gap in two steps:
+  ///
+  /// 1. Calls `GmaMediationChartboost()` to register the adapter with the
+  ///    Google Mobile Ads mediation chain.
+  /// 2. Invokes [ChartboostConsentChannel.applyConsent] which fires a
+  ///    platform [MethodChannel] call handled by native code **inside this
+  ///    package** — no `AppDelegate` or `MainActivity` changes needed by the
+  ///    consumer.
+  ///
+  /// ### Per-platform behaviour
+  /// | Platform | What happens |
+  /// |----------|-------------|
+  /// | **iOS**  | `GmaAllMediationsPlugin.swift` calls `Chartboost.addDataUseConsent(CBGDPRDataUseConsent)` and `Chartboost.addDataUseConsent(CBCCPADataUseConsent)` before the first ad request. |
+  /// | **Android** | No-op — the Chartboost Android adapter reads consent automatically from the `RequestConfiguration` already applied to `MobileAds`. |
+  ///
+  /// ### Revenue impact 💶
+  /// Without the correct GDPR signal, Chartboost drops out of the auction
+  /// entirely for EEA users, causing a direct loss of fill rate and eCPM.
+  /// This method fires automatically during [GmaAllMediations.initialize] so
+  /// consent is always set before the first ad request.
+  ///
+  /// See: https://developers.google.com/admob/flutter/mediation/chartboost
+  Future<void> _applyChartboostConsent({required bool hasConsent, required bool doNotSell}) async {
     try {
+      // Step 1: register adapter with the GMA mediation chain.
       GmaMediationChartboost();
-      GmaLogger.info('Chartboost — consent applied.');
+
+      // Step 2: fire native consent via MethodChannel.
+      await ChartboostConsentChannel.applyConsent(hasConsent: hasConsent, doNotSell: doNotSell);
+
+      GmaLogger.success(
+        'Chartboost — GDPR/CCPA consent applied natively. '
+        'hasConsent: $hasConsent, doNotSell: $doNotSell',
+      );
     } catch (e, st) {
       GmaLogger.error('Chartboost consent error', e, st);
     }
   }
+
+  /// Propagates consent signals to the **DT Exchange (Fyber)** mediation adapter.
+  ///
+  /// DT Exchange supports two independent privacy frameworks — CCPA (via US
+  /// Privacy String) and LGPD (Brazil). Both are derived automatically from
+  /// existing [GmaMediationConfig] values so no extra config fields are needed.
+  ///
+  /// ---
+  ///
+  /// ### US Privacy String (CCPA / US State Laws)
+  ///
+  /// The [IAB CCPA Compliance Framework](https://iabtechlab.com/standards/ccpa/)
+  /// defines a standardised 4-character string to encode the user's US privacy
+  /// choices:
+  ///
+  /// | Char | Field | Meaning |
+  /// |------|-------|---------|
+  /// | `1`  | Version | Always `"1"` (current spec) |
+  /// | `Y`  | User notified | User was shown a privacy notice |
+  /// | `N`/`Y` | Opted out of sale | `"N"` = sale allowed, `"Y"` = Do Not Sell |
+  /// | `N`  | LSPA | Not applicable for most apps |
+  ///
+  /// **Derived automatically from [doNotSell] unless [usPrivacyStringData] is provided:**
+  /// * `doNotSell = false` → `"1YNN"` (sale permitted)
+  /// * `doNotSell = true`  → `"1YYN"` (Do Not Sell — opt-out)
+  ///
+  /// #### [usPrivacyStringData] — optional override
+  /// Supply a custom IAB US Privacy String when your app manages US state
+  /// privacy consent through a dedicated CMP or other mechanism. When provided,
+  /// it takes precedence over the value derived from [doNotSell]. Pass `null`
+  /// (the default) to use the automatically derived value.
+  ///
+  /// ```dart
+  /// // Example: provide an explicit string from your CMP
+  /// _applyDTExchange(
+  ///   hasConsent: true,
+  ///   doNotSell: false,
+  ///   usPrivacyStringData: '1YNN',  // custom override
+  /// );
+  /// ```
+  ///
+  /// ### LGPD (Brazil — Lei Geral de Proteção de Dados)
+  ///
+  /// Brazil's privacy law operates similarly to GDPR. Mapped directly from
+  /// [hasConsent]: `true` = consent granted; `false` = not granted.
+  /// Harmless no-op for apps that do not operate in Brazil.
+  ///
+  /// ### Revenue impact 💶
+  /// DT Exchange is a strong performer for interstitials and rewarded video,
+  /// particularly in Latin America, Europe, and South-East Asia. Missing US
+  /// Privacy or LGPD signals can cause DT Exchange to serve limited or no
+  /// ads in those regions, directly reducing fill rate and eCPM.
+  ///
+  /// See: https://developers.google.com/admob/flutter/mediation/dt-exchange
+  Future<void> _applyDTExchange({
+    required bool hasConsent,
+    required bool doNotSell,
+    String? usPrivacyStringData,
+  }) async {
+    try {
+      // ── US Privacy String (CCPA & US state laws) ─────────────────────────
+      // Default derived from doNotSell: "1YNN" = sale allowed | "1YYN" = Do Not Sell.
+      // usPrivacyStringData takes precedence when supplied by the caller.
+      final String derivedPrivacyString = doNotSell ? '1YYN' : '1YNN';
+      final String effectivePrivacyString = usPrivacyStringData ?? derivedPrivacyString;
+      await GmaMediationDTExchange().setUSPrivacyString(effectivePrivacyString);
+
+      // ── LGPD (Brazil) ─────────────────────────────────────────────────────
+      // Maps hasConsent directly: true = consent granted, false = not granted.
+      await GmaMediationDTExchange().setLgpdConsent(hasConsent);
+
+      GmaLogger.success(
+        'DT Exchange — consent applied. '
+        'usPrivacyString: $effectivePrivacyString '
+        '(${usPrivacyStringData != null ? 'custom' : 'derived from doNotSell'}), '
+        'lgpdConsent: $hasConsent',
+      );
+    } catch (e, st) {
+      GmaLogger.error('DT Exchange consent error', e, st);
+    }
+  }
+
 
   // /// Propagates consent to the **IronSource (LevelPlay)** mediation adapter.
   // ///

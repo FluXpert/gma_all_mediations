@@ -483,5 +483,6 @@ iOS Side info plist. (add dicts in SKAdNetworkItems if you've it already)
 
 
 
-
+# DT Exchange Setup: https://developers.google.com/admob/flutter/mediation/dt-exchange
+Check from setup website to check if any extra setup is required in android/ios.
 
