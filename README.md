@@ -1,4 +1,5 @@
 # For all mediations, you need to update app-ads.txt
+# google_mobile_ads: ^7.0.0
 
 # App Lovin Setup: https://developers.google.com/admob/flutter/mediation/applovin
 Android side update is not required.
@@ -208,3 +209,26 @@ iOS Info plist Update: https://docs.unity.com/ads/en-us/manual/ConfiguringAdNetw
 Only update info plist
 
 
+
+
+# all projects repositories
+
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea"
+        }
+        maven{
+            url "https://android-sdk.is.com/"
+        }
+        maven {
+            url "https://cboost.jfrog.io/artifactory/chartboost-ads/"
+        }
+        maven {
+            url "https://artifact.bytedance.com/repository/pangle/"
+        }
+        maven {
+            url "https://repo.pubmatic.com/artifactory/public-repos"
+        }
+    }
