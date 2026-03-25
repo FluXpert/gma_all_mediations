@@ -169,5 +169,18 @@ iOS Info Plist: https://target.vk.ru/help/partners/mob/ios14integration/en
  </dict>
 </array>
 
+# Pangle Setup: https://developers.google.com/admob/flutter/mediation/pangle
 
+Android Setup - (Android only) Add the following repositories to the build.gradle file inside your project's android directory:
+  repositories {
+      google()
+      mavenCentral()
+      maven {
+          url = uri("https://artifact.bytedance.com/repository/pangle/")
+      }
+  }
+
+
+iOS Setup: https://pangleglobal.com/integration/ios14-readiness
+Only update your INfo.plist
 
