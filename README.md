@@ -25,7 +25,7 @@ These are the currently maintained and actively supported mediation adapters.
 | [**DT Exchange**](https://developers.google.com/admob/flutter/mediation/dt-exchange) | `gma_mediation_dtexchange` | ❎ None | Auto-forwarded natively by UMP |
 | [**InMobi**](https://developers.google.com/admob/flutter/mediation/inmobi) | `gma_mediation_inmobi` | ❎ None | Auto-forwarded natively by UMP |
 | [**IronSource**](https://developers.google.com/admob/flutter/mediation/ironsource) | `gma_mediation_ironsource` | ✅ Gradle repo | Exact Boolean setter execution (Dart) |
-| [**Liftoff (Vungle)**](https://developers.google.com/admob/flutter/mediation/vungle) | `gma_mediation_liftoffmonetize` | ❎ None | Exact Boolean setter execution (Dart) |
+| [**Liftoff (Vungle)**](https://developers.google.com/admob/flutter/mediation/liftoff-monetize) | `gma_mediation_liftoffmonetize` | ❎ None | Exact Boolean setter execution (Dart) |
 | [**Meta (Facebook)**](https://developers.google.com/admob/flutter/mediation/meta) | `gma_mediation_meta` | ✅ Info.plist flag | UMP + Auto-ATT Tracking execution |
 | [**Mintegral**](https://developers.google.com/admob/flutter/mediation/mintegral) | `gma_mediation_mintegral` | ✅ Gradle repo | Auto-forwarded natively by UMP |
 | [**Moloco**](https://developers.google.com/admob/flutter/mediation/moloco) | `gma_mediation_moloco` | ❎ None | Auto-forwarded natively by UMP |
