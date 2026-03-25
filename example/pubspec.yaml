@@ -1,0 +1,22 @@
+name: gma_all_mediations_example
+description: "Demonstrates how to use the gma_all_mediations package."
+publish_to: 'none'
+
+environment:
+  sdk: ^3.9.2
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  gma_all_mediations:
+    path: ../
+  google_mobile_ads: ^7.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

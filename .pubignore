@@ -1,0 +1,17 @@
+# Exclude development and configuration files from the pub.dev package bundle.
+.idea/
+.vscode/
+.git/
+.gitignore
+.metadata
+.dart_tool/
+.flutter-plugins-dependencies
+pubspec.lock
+*.iml
+
+# Exclude generated documentation (pub.dev generates this automatically)
+doc/
+
+# Exclude any scripts or notes that aren't intended for the end user.
+INFORMATION.md
+migrate_working_dir/
