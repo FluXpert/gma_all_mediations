@@ -20,6 +20,7 @@ dependencies:
   gma_mediation_meta: ^1.5.1
   gma_mediation_mintegral: ^2.0.3
   gma_mediation_moloco: ^3.3.0
+  gma_mediation_mytarget: ^1.8.0
   gma_mediation_unity: ^1.6.5
   google_mobile_ads: ^7.0.0
 

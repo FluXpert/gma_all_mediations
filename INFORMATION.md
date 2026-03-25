@@ -130,6 +130,7 @@ GmaAllMediations.initialize()
 | **Liftoff Monetize (Vungle)** | `gma_mediation_liftoffmonetize ^1.4.3` | ✅ Real | `setGDPRStatus(bool, null)`, `setCCPAStatus(!doNotSell)` | Exact boolean setters; depends on explicit Dart calls |
 | **Mintegral** | `gma_mediation_mintegral ^2.0.3` | ❌ Empty class | Adapter registration only | Consent auto-managed natively by UMP |
 | **Moloco** | `gma_mediation_moloco ^3.3.0` | ❌ Empty class | Adapter registration only | Consent auto-managed natively by UMP |
+| **myTarget** | `gma_mediation_mytarget ^1.8.0` | ❌ Empty class | Adapter registration only | Consent auto-managed natively by UMP |
 
 ### Commented-out (future) adapters
 - (None currently)

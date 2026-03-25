@@ -151,3 +151,23 @@ iOS Info Plist: https://dev.mintegral.com/doc/index.html?file=sdk-m_sdk-ios&lang
 
 No Code required on Android or iOS.
 
+# myTarget Setup: https://developers.google.com/admob/flutter/mediation/mytarget
+
+Nothing Required on Android
+
+iOS Info Plist: https://target.vk.ru/help/partners/mob/ios14integration/en
+
+<key>SKAdNetworkItems</key>
+<array>
+  <dict>
+    <key>SKAdNetworkIdentifier</key>
+    <string>n9x2a789qt.skadnetwork</string>
+  </dict>
+  <dict>
+    <key>SKAdNetworkIdentifier</key>
+  <string>r26jy69rpl.skadnetwork</string>
+ </dict>
+</array>
+
+
+
