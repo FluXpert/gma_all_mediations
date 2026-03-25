@@ -128,9 +128,11 @@ GmaAllMediations.initialize()
 | **InMobi** | `gma_mediation_inmobi ^2.0.1` | ❌ Empty class | Adapter registration only | ATT handled by package; SKAN IDs need manual plist entry |
 | **Meta Audience Network** | `gma_mediation_meta` | ❌ Empty class | Adapter registration only | Consent auto-managed by OS/SDK via ATT and UMP forwarding |
 | **Liftoff Monetize (Vungle)** | `gma_mediation_liftoffmonetize ^1.4.3` | ✅ Real | `setGDPRStatus(bool, null)`, `setCCPAStatus(!doNotSell)` | Exact boolean setters; depends on explicit Dart calls |
+| **Mintegral** | `gma_mediation_mintegral ^2.0.3` | ❌ Empty class | Adapter registration only | Consent auto-managed natively by UMP |
+| **Moloco** | `gma_mediation_moloco ^3.3.0` | ❌ Empty class | Adapter registration only | Consent auto-managed natively by UMP |
 
 ### Commented-out (future) adapters
-- `gma_mediation_mintegral` — stub, needs implementation
+- (None currently)
 
 ---
 

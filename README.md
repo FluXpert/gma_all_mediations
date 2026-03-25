@@ -147,3 +147,7 @@ Link: https://vungle-static-assets.s3.amazonaws.com/dashboard/admin/prod/skadnet
 NOthing required on Android.
 iOS Info Plist: https://dev.mintegral.com/doc/index.html?file=sdk-m_sdk-ios&lang=en
 
+# Moloco Setup: https://developers.google.com/admob/flutter/mediation/moloco
+
+No Code required on Android or iOS.
+
