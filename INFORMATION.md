@@ -127,9 +127,9 @@ GmaAllMediations.initialize()
 | **IronSource (LevelPlay)** | `gma_mediation_ironsource ^2.3.0` | ✅ Real | `setConsent`, `setDoNotSell` | Lifecycle auto-managed by `IronSourceLifecycleObserver` via reflection |
 | **InMobi** | `gma_mediation_inmobi ^2.0.1` | ❌ Empty class | Adapter registration only | ATT handled by package; SKAN IDs need manual plist entry |
 | **Meta Audience Network** | `gma_mediation_meta` | ❌ Empty class | Adapter registration only | Consent auto-managed by OS/SDK via ATT and UMP forwarding |
+| **Liftoff Monetize (Vungle)** | `gma_mediation_liftoffmonetize ^1.4.3` | ✅ Real | `setGDPRStatus(bool, null)`, `setCCPAStatus(!doNotSell)` | Exact boolean setters; depends on explicit Dart calls |
 
 ### Commented-out (future) adapters
-- `gma_mediation_liftoffmonetize` — uses `setGDPRStatus`, `setCCPAStatus`
 - `gma_mediation_mintegral` — stub, needs implementation
 
 ---

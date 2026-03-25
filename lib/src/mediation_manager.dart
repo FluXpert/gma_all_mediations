@@ -349,14 +349,23 @@ class MediationManager {
 
   /// Propagates consent to the **Liftoff Monetize (Vungle)** adapter.
   ///
-  /// Liftoff excels at performance-based rewarded and interstitial campaigns.
+  /// The `gma_mediation_liftoffmonetize` package provides explicit Dart-level
+  /// privacy setters for GDPR and CCPA.
   ///
-  /// See: https://developers.google.com/admob/flutter/mediation/liftoffmonetize
+  /// - **GDPR**: `hasConsent` is forwarded as a boolean (`null` message version).
+  /// - **CCPA**: mapped inversely (`!doNotSell`), where `false` means opted out.
+  ///
+  /// ### Revenue impact 💶
+  /// Liftoff excels at performance-based rewarded and interstitial campaigns.
+  /// Proper consent maximizes fill rates for these lucrative ad formats.
+  ///
+  /// See: https://developers.google.com/admob/flutter/mediation/liftoff-monetize
   void _applyLiftoffConsent({required bool hasConsent, required bool doNotSell}) {
     try {
+      // CCPA status: true = opted in (can sell), false = opted out (do not sell)
       GmaMediationLiftoffmonetize().setGDPRStatus(hasConsent, null);
       GmaMediationLiftoffmonetize().setCCPAStatus(!doNotSell);
-      GmaLogger.info('Liftoff Monetize — consent applied.');
+      GmaLogger.success('Liftoff Monetize — GDPR and CCPA consent applied.');
     } catch (e, st) {
       GmaLogger.error('Liftoff consent error', e, st);
     }
