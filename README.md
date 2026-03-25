@@ -114,11 +114,15 @@ Infoplist update (check from link for latest one)
 
 
 
-# Meta Setup: 
+# Meta Setup: https://developers.google.com/admob/flutter/mediation/meta
 
 
 If you face issue in Android - add this in android/app/proguard-rules.pro:
 -dontwarn com.facebook.infer.annotation.Nullsafe$Mode
 -dontwarn com.facebook.infer.annotation.Nullsafe
+
+
+Info Plist:
+https://developers.facebook.com/docs/setting-up/platform-setup/ios/SKAdNetwork
 
 
