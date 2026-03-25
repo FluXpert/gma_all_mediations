@@ -107,6 +107,8 @@ While `gma_all_mediations` requires **no structural bridging code**, some Ad SDK
 
 ### 🤖 Android Setup
 
+> 💡 **Example File:** See our full [example_build_gradle.txt](example_build_gradle.txt) for a complete working Android configuration.
+
 #### Maven Repositories (`android/build.gradle` or `settings.gradle`)
 If you are using **Chartboost**, **IronSource**, **Mintegral**, **Pangle**, or **PubMatic**, you must add their Maven repositories to your project.
 _Note: For modern Flutter apps using `dependencyResolutionManagement`, put this in `settings.gradle` instead._
@@ -145,6 +147,8 @@ subprojects {
 ```
 
 ### 🍎 iOS Setup (`ios/Runner/Info.plist`)
+
+> 💡 **Example File:** See our full [example_info_plist.txt](example_info_plist.txt) for a complete working iOS configuration including all SKAdNetwork IDs.
 
 #### App Tracking Transparency (ATT)
 To accurately track attribution context (Meta, Liftoff, etc.), provide your tracking usage prompt inside `Info.plist`:
