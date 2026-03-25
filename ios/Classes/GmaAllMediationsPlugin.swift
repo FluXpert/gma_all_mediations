@@ -87,18 +87,18 @@ public class GmaAllMediationsPlugin: NSObject, FlutterPlugin {
     }
 
     // ── GDPR ──────────────────────────────────────────────────────────────
-    // CBGDPRDataUseConsent.behavioral  → personalised ads (user consented)
-    // CBGDPRDataUseConsent.nonBehavioral → contextual ads only (no consent)
-    let gdprConsent = CBGDPRDataUseConsent(
-      consent: hasConsent ? .behavioral : .nonBehavioral
+    // CHBDataUseConsent.GDPR(.behavioral)  → personalised ads (user consented)
+    // CHBDataUseConsent.GDPR(.nonBehavioral) → contextual ads only (no consent)
+    let gdprConsent = CHBDataUseConsent.GDPR(
+      hasConsent ? .behavioral : .nonBehavioral
     )
     Chartboost.addDataUseConsent(gdprConsent)
 
     // ── CCPA ──────────────────────────────────────────────────────────────
-    // CBCCPADataUseConsent.optInSale  → user allows sale of personal data
-    // CBCCPADataUseConsent.optOutSale → "Do Not Sell" (user opted out)
-    let ccpaConsent = CBCCPADataUseConsent(
-      consent: doNotSell ? .optOutSale : .optInSale
+    // CHBDataUseConsent.CCPA(.optInSale)  → user allows sale of personal data
+    // CHBDataUseConsent.CCPA(.optOutSale) → "Do Not Sell" (user opted out)
+    let ccpaConsent = CHBDataUseConsent.CCPA(
+      doNotSell ? .optOutSale : .optInSale
     )
     Chartboost.addDataUseConsent(ccpaConsent)
 

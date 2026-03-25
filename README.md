@@ -125,4 +125,9 @@ If you face issue in Android - add this in android/app/proguard-rules.pro:
 Info Plist:
 https://developers.facebook.com/docs/setting-up/platform-setup/ios/SKAdNetwork
 
+<key>NSUserTrackingUsageDescription</key>
+	<string>This identifier will be used to deliver personalized ads to you.</string>
+	<key>FacebookAdvertiserTrackingEnabled</key>
+	<true/>
 
+    
