@@ -32,6 +32,7 @@ import 'package:gma_mediation_mintegral/gma_mediation_mintegral.dart';
 import 'package:gma_mediation_moloco/gma_mediation_moloco.dart';
 import 'package:gma_mediation_mytarget/gma_mediation_mytarget.dart';
 import 'package:gma_mediation_pangle/gma_mediation_pangle.dart';
+import 'package:gma_mediation_pubmatic/gma_mediation_pubmatic.dart';
 // import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
 // import 'package:gma_mediation_ironsource/gma_mediation_ironsource.dart';
 // import 'package:gma_mediation_liftoffmonetize/gma_mediation_liftoffmonetize.dart';
@@ -98,6 +99,7 @@ class MediationManager {
     _applyMolocoConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyMyTargetConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyPangleConsent(hasConsent: hasConsent, doNotSell: doNotSell);
+    _applyPubMaticConsent(hasConsent: hasConsent, doNotSell: doNotSell);
 
     GmaLogger.success('Consent applied to all active mediation adapters.');
   }
@@ -521,6 +523,25 @@ class MediationManager {
       GmaLogger.success('Pangle — adapter registered. Consent auto-managed natively.');
     } catch (e, st) {
       GmaLogger.error('Pangle consent error', e, st);
+    }
+  }
+
+  /// Propagates consent to the **PubMatic** mediation adapter.
+  ///
+  /// The `gma_mediation_pubmatic` package is an intentionally empty Dart class.
+  /// Instantiating `GmaMediationPubmatic()` registers the adapter with the
+  /// Google Mobile Ads SDK mediation chain.
+  ///
+  /// PubMatic relies on the Google User Messaging Platform (UMP) SDK to natively
+  /// auto-forward GDPR and CCPA consent status.
+  ///
+  /// See: https://developers.google.com/admob/flutter/mediation/pubmatic
+  void _applyPubMaticConsent({required bool hasConsent, required bool doNotSell}) {
+    try {
+      GmaMediationPubmatic();
+      GmaLogger.success('PubMatic — adapter registered. Consent auto-managed natively.');
+    } catch (e, st) {
+      GmaLogger.error('PubMatic consent error', e, st);
     }
   }
 }

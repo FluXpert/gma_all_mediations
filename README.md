@@ -176,11 +176,27 @@ Android Setup - (Android only) Add the following repositories to the build.gradl
       google()
       mavenCentral()
       maven {
-          url = uri("https://artifact.bytedance.com/repository/pangle/")
+          uri("https://artifact.bytedance.com/repository/pangle/")
       }
   }
 
 
 iOS Setup: https://pangleglobal.com/integration/ios14-readiness
 Only update your INfo.plist
+
+# PubMatic Setup: https://developers.google.com/admob/flutter/mediation/pubmatic
+  
+(Android only) Add the following repositories to the build.gradle file inside your project's android directory:
+  repositories {
+      google()
+      mavenCentral()
+      maven {
+          uri("https://repo.pubmatic.com/artifactory/public-repos")
+      }
+  }
+
+
+
+iOS info plist update: https://help.pubmatic.com/openwrap/reference/home-get-started-with-ios-openwrap-sdk-as-primary-ad-sdk#configure-skadnetwork-settings-to-track-conversions
+Only update info plist
 
