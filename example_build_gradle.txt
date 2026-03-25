@@ -1,0 +1,73 @@
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url "https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea"
+        }
+        maven{
+            url "https://android-sdk.is.com/"
+        }
+        maven {
+            url "https://cboost.jfrog.io/artifactory/chartboost-ads/"
+        }
+        maven {
+            url "https://artifact.bytedance.com/repository/pangle/"
+        }
+        maven {
+            url "https://repo.pubmatic.com/artifactory/public-repos"
+        }
+    }
+    subprojects {
+        afterEvaluate { project ->
+            if (project.hasProperty('android')) {
+                project.android {
+                    if (namespace == null) {
+                        namespace project.group
+                    }
+                }
+            }
+        }
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.application") ||
+                project.plugins.hasPlugin("com.android.library")) {
+            project.android {
+                compileSdkVersion 36
+                buildToolsVersion "36.0.0"
+                // Kotlin Analysis API binary incompatibility with this lint detector crashes
+                // all subproject lint tasks. Disabling it globally is the documented workaround.
+                lint {
+                    disable "NullSafeMutableLiveData"
+                }
+            }
+        }
+        if (project.hasProperty("android")) {
+            project.android {
+                if (namespace == null) {
+                    namespace project.group
+                }
+            }
+        }
+        
+        // Suppress compiler warnings globally for all subprojects
+        project.tasks.withType(JavaCompile).configureEach {
+            options.compilerArgs += ['-Xlint:-deprecation', '-Xlint:-unchecked', '-Xlint:-options']
+            options.deprecation = false
+            options.warnings = false
+        }
+    }
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+//    project.evaluationDependsOn(':app')
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
