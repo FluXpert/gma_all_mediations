@@ -200,3 +200,11 @@ Only update your INfo.plist
 iOS info plist update: https://help.pubmatic.com/openwrap/reference/home-get-started-with-ios-openwrap-sdk-as-primary-ad-sdk#configure-skadnetwork-settings-to-track-conversions
 Only update info plist
 
+# Unity Ads Setup: https://developers.google.com/admob/flutter/mediation/unity
+
+No update required on Android Side.
+
+iOS Info plist Update: https://docs.unity.com/ads/en-us/manual/ConfiguringAdNetworkIDs
+Only update info plist
+
+
