@@ -142,4 +142,8 @@ You only need to update Info.Plist:
 Link: https://vungle-static-assets.s3.amazonaws.com/dashboard/admin/prod/skadnetworkids.xml
 
 
-# 
+# Mintegral Setup: https://developers.google.com/admob/flutter/mediation/mintegral
+
+NOthing required on Android.
+iOS Info Plist: https://dev.mintegral.com/doc/index.html?file=sdk-m_sdk-ios&lang=en
+

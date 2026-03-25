@@ -28,6 +28,7 @@ import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
 import 'package:gma_mediation_ironsource/gma_mediation_ironsource.dart';
 import 'package:gma_mediation_liftoffmonetize/gma_mediation_liftoffmonetize.dart';
 import 'package:gma_mediation_meta/gma_mediation_meta.dart';
+import 'package:gma_mediation_mintegral/gma_mediation_mintegral.dart';
 // import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
 // import 'package:gma_mediation_ironsource/gma_mediation_ironsource.dart';
 // import 'package:gma_mediation_liftoffmonetize/gma_mediation_liftoffmonetize.dart';
@@ -90,7 +91,7 @@ class MediationManager {
     _applyLiftoffConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyMetaConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyInMobiConsent(hasConsent: hasConsent, doNotSell: doNotSell);
-    // _applyMintegralConsent(hasConsent: hasConsent, doNotSell: doNotSell);
+    _applyMintegralConsent(hasConsent: hasConsent, doNotSell: doNotSell);
 
     GmaLogger.success('Consent applied to all active mediation adapters.');
   }
@@ -441,14 +442,22 @@ class MediationManager {
     }
   }
 
-  // /// Propagates consent to the **Mintegral** mediation adapter.
-  // ///
-  // /// See: https://developers.google.com/admob/flutter/mediation/mintegral
-  // void _applyMintegralConsent({required bool hasConsent, required bool doNotSell}) {
-  //   try {
-  //     GmaLogger.info('Mintegral — consent applied.');
-  //   } catch (e, st) {
-  //     GmaLogger.error('Mintegral consent error', e, st);
-  //   }
-  // }
+  /// Propagates consent to the **Mintegral** mediation adapter.
+  ///
+  /// The `gma_mediation_mintegral` package is an intentionally empty Dart class.
+  /// Instantiating `GmaMediationMintegral()` registers the adapter with the
+  /// Google Mobile Ads SDK mediation chain.
+  ///
+  /// Mintegral (Mobvista) relies on the Google User Messaging Platform (UMP)
+  /// SDK to natively auto-forward GDPR and CCPA consent status.
+  ///
+  /// See: https://developers.google.com/admob/flutter/mediation/mintegral
+  void _applyMintegralConsent({required bool hasConsent, required bool doNotSell}) {
+    try {
+      GmaMediationMintegral();
+      GmaLogger.success('Mintegral — adapter registered. Consent auto-managed natively.');
+    } catch (e, st) {
+      GmaLogger.error('Mintegral consent error', e, st);
+    }
+  }
 }
