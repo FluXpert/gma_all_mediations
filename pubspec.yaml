@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   gma_mediation_applovin: ^2.5.2
-  gma_mediation_chartboost: ^1.4.1
+  gma_mediation_chartboost: 1.4.0
   gma_mediation_dtexchange: ^1.3.3
   gma_mediation_inmobi: ^2.0.1
   gma_mediation_ironsource: ^2.3.0

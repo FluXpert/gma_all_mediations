@@ -6,11 +6,46 @@ iOS Side Infoplist.
 copy from: https://skadnetwork-ids.applovin.com/v1/skadnetworkids.xml
 
 
+
+
+
 # Chartboost Setup: https://developers.google.com/admob/flutter/mediation/chartboost
 
 Android side update:
+
+android/build.gradle — add Chartboost maven repo inside `repositories {}`:
+```groovy
+repositories {
+    google()
+    mavenCentral()
+    maven {
+        url "https://cboost.jfrog.io/artifactory/chartboost-ads/"
+    }
+}
+```
+
+android/build.gradle — add lint workaround inside `subprojects {}`:
+```groovy
+subprojects {
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.application") ||
+            project.plugins.hasPlugin("com.android.library")) {
+            // Kotlin Analysis API binary incompatibility with this lint detector crashes
+            // all subproject lint tasks. Disabling it globally is the documented workaround.
+            android {
+                lint {
+                    disable "NullSafeMutableLiveData"
+                }
+            }
+        }
+    }
+}
+```
+
 Optional - AndroidManifest.xml
+```xml
 <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+```
 
 
 iOS Side info plist. (add dicts in SKAdNetworkItems if you've it already)
@@ -22,6 +57,10 @@ iOS Side info plist. (add dicts in SKAdNetworkItems if you've it already)
         <string>f38h382jlk.skadnetwork</string>
     </dict>
 </array>
+
+
+
+
 
 
 
@@ -60,5 +99,26 @@ dependencyResolutionManagement {
 Note: Must be in settings.gradle (dependencyResolutionManagement), NOT build.gradle allprojects.
 Modern Flutter Android projects ignore plugin-declared maven repos at the host level.
 
-## iOS — No extra setup required.
+iOS Plist update:
+https://developers.is.com/ironsource-mobile/ios/ios-14-network-support/
+
+Infoplist update (check from link for latest one)
+<key>SKAdNetworkItems</key>
+<array>
+   <dict>
+      <key>SKAdNetworkIdentifier</key>
+      <string>su67r6k2v3.skadnetwork</string>
+   </dict>
+</array>
+
+
+
+
+# Meta Setup: 
+
+
+If you face issue in Android - add this in android/app/proguard-rules.pro:
+-dontwarn com.facebook.infer.annotation.Nullsafe$Mode
+-dontwarn com.facebook.infer.annotation.Nullsafe
+
 
