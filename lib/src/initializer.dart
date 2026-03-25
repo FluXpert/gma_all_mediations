@@ -1,25 +1,3 @@
-/// ────────────────────────────────────────────────────────────────────────────
-/// The public entry-point for **GMA All Mediations**.
-///
-/// Call [GmaAllMediations.initialize] once — typically in `main()` before
-/// `runApp()` — and the package will:
-///
-///  1. Request App Tracking Transparency (iOS, optional).
-///  2. Fetch and display the UMP consent form if required.
-///  3. Forward GDPR / CCPA signals to every active mediation adapter.
-///  4. Initialise the Google Mobile Ads SDK.
-///
-/// Everything is automatic — you control behaviour through [GmaMediationConfig].
-///
-/// ### Revenue checklist ✅
-/// * Enable ATT on iOS for a potential +20–50 % eCPM lift.
-/// * Never force consent in production; let UMP do the work.
-/// * Use test device IDs in debug builds to avoid invalid-click violations.
-/// * Set the correct child-directed / under-age flags for your audience.
-/// * Keep all mediation adapters up-to-date for the best CPMs.
-/// ────────────────────────────────────────────────────────────────────────────
-library;
-
 import 'dart:io' show Platform;
 
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
@@ -29,19 +7,8 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'config.dart';
 import 'logger.dart';
 import 'mediation_manager.dart';
+import 'meta_consent_channel.dart';
 
-/// The main controller for the **GMA All Mediations** package.
-///
-/// Use the singleton [GmaAllMediations.instance] to avoid creating multiple
-/// instances and to share state (e.g. the [isInitialized] flag) across your
-/// app.
-///
-/// ```dart
-/// // In main() — before runApp()
-/// await GmaAllMediations.instance.initialize(
-///   config: GmaMediationConfig(debug: false),
-/// );
-/// ```
 class GmaAllMediations {
   // ── Singleton ──────────────────────────────────────────────────────────────
 
@@ -185,7 +152,13 @@ class GmaAllMediations {
     try {
       final TrackingStatus status = await AppTrackingTransparency.requestTrackingAuthorization();
       GmaLogger.info('ATT status: $status');
-      if (status == TrackingStatus.authorized) {
+
+      final bool isAuthorized = status == TrackingStatus.authorized;
+
+      // Meta Audience Network requires this explicit flag on iOS 14+.
+      await MetaConsentChannel.setAdvertiserTrackingEnabled(isAuthorized);
+
+      if (isAuthorized) {
         GmaLogger.success('ATT granted — personalised iOS ads enabled.');
       } else {
         GmaLogger.warn('ATT not granted ($status). iOS ads may be limited in targeting.');

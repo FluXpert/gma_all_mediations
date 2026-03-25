@@ -31,12 +31,21 @@ public class GmaAllMediationsPlugin: NSObject, FlutterPlugin {
   // ── FlutterPlugin registration ──────────────────────────────────────────
 
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(
+    let instance = GmaAllMediationsPlugin()
+
+    // Chartboost channel
+    let chartboostChannel = FlutterMethodChannel(
       name: "gma_all_mediations/chartboost_consent",
       binaryMessenger: registrar.messenger()
     )
-    let instance = GmaAllMediationsPlugin()
-    registrar.addMethodCallDelegate(instance, channel: channel)
+    registrar.addMethodCallDelegate(instance, channel: chartboostChannel)
+
+    // Meta (Facebook) channel
+    let metaChannel = FlutterMethodChannel(
+      name: "gma_all_mediations/meta_consent",
+      binaryMessenger: registrar.messenger()
+    )
+    registrar.addMethodCallDelegate(instance, channel: metaChannel)
   }
 
   // ── MethodCall handler ──────────────────────────────────────────────────
@@ -45,6 +54,8 @@ public class GmaAllMediationsPlugin: NSObject, FlutterPlugin {
     switch call.method {
     case "applyConsent":
       applyChartboostConsent(call: call, result: result)
+    case "setAdvertiserTrackingEnabled":
+      applyMetaTracking(call: call, result: result)
     default:
       result(FlutterMethodNotImplemented)
     }
@@ -92,5 +103,42 @@ public class GmaAllMediationsPlugin: NSObject, FlutterPlugin {
     Chartboost.addDataUseConsent(ccpaConsent)
 
     result(nil) // Success
+  }
+
+  /// Forwards the ATT tracking authorization status to the Meta SDK.
+  ///
+  /// Arguments expected in `call.arguments`:
+  /// - `"trackingEnabled"` (Bool) – `true` → authorized; `false` → not authorized.
+  ///
+  /// Uses Objective-C runtime reflection so that this plugin does not require
+  /// a compile-time dependency on `FBAudienceNetwork`. If the app does not
+  /// use the Meta adapter, this silently does nothing.
+  private func applyMetaTracking(
+    call: FlutterMethodCall,
+    result: @escaping FlutterResult
+  ) {
+    guard let args = call.arguments as? [String: Any],
+          let trackingEnabled = args["trackingEnabled"] as? Bool
+    else {
+      result(
+        FlutterError(
+          code: "INVALID_ARGUMENTS",
+          message: "setAdvertiserTrackingEnabled requires 'trackingEnabled' (Bool).",
+          details: nil
+        )
+      )
+      return
+    }
+
+    // Safely look up FBAdSettings without importing FBAudienceNetwork.
+    if let fbAdSettingsClass: AnyClass = NSClassFromString("FBAdSettings") {
+      let selector = NSSelectorFromString("setAdvertiserTrackingEnabled:")
+      if fbAdSettingsClass.responds(to: selector),
+         let targetClass = fbAdSettingsClass as? NSObjectProtocol {
+        targetClass.perform(selector, with: NSNumber(value: trackingEnabled))
+      }
+    }
+
+    result(nil)
   }
 }

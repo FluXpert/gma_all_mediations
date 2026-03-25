@@ -363,14 +363,27 @@ class MediationManager {
 
   /// Propagates consent to the **Meta Audience Network** adapter.
   ///
-  /// Meta (Facebook) is a dominant advertiser with high fill rates globally.
+  /// The `gma_mediation_meta` Flutter package does not expose Dart-level
+  /// consent setters. Instead, instantiating `GmaMediationMeta()` registers
+  /// the adapter with the Google Mobile Ads mediation chain.
+  ///
+  /// Meta (Facebook) reads App Tracking Transparency (ATT) and GDPR consent
+  /// signals automatically at the native OS level via the Facebook SDK, and
+  /// through AdMob's automatic consent forwarding.
+  ///
+  /// ### Revenue impact 💶
+  /// Meta Audience Network is a dominant advertiser with high fill rates
+  /// globally, especially for banner and interstitial formats. Registration
+  /// is all that is required for the SDK to begin serving personalized ads
+  /// once the user has consented via UMP/ATT.
   ///
   /// See: https://developers.google.com/admob/flutter/mediation/meta
   void _applyMetaConsent({required bool hasConsent, required bool doNotSell}) {
     try {
+      // Registers the Meta adapter with the GMA mediation chain.
       // Meta reads ATT and consent automatically via the Facebook SDK.
       GmaMediationMeta();
-      GmaLogger.info('Meta Audience Network — consent auto-managed by Meta SDK.');
+      GmaLogger.success('Meta Audience Network — adapter registered. Consent auto-managed by Meta SDK.');
     } catch (e, st) {
       GmaLogger.error('Meta consent error', e, st);
     }
