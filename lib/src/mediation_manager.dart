@@ -26,6 +26,7 @@ import 'package:gma_mediation_chartboost/gma_mediation_chartboost.dart';
 import 'package:gma_mediation_dtexchange/gma_mediation_dtexchange.dart';
 import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
 import 'package:gma_mediation_ironsource/gma_mediation_ironsource.dart';
+import 'package:gma_mediation_liftoffmonetize/gma_mediation_liftoffmonetize.dart';
 import 'package:gma_mediation_meta/gma_mediation_meta.dart';
 // import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
 // import 'package:gma_mediation_ironsource/gma_mediation_ironsource.dart';
@@ -86,7 +87,7 @@ class MediationManager {
     await _applyChartboostConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyDTExchange(hasConsent: hasConsent, doNotSell: doNotSell);
     await _applyIronSourceConsent(hasConsent: hasConsent, doNotSell: doNotSell);
-    // _applyLiftoffConsent(hasConsent: hasConsent, doNotSell: doNotSell);
+    _applyLiftoffConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyMetaConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyInMobiConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     // _applyMintegralConsent(hasConsent: hasConsent, doNotSell: doNotSell);
@@ -346,20 +347,20 @@ class MediationManager {
     }
   }
 
-  // /// Propagates consent to the **Liftoff Monetize (Vungle)** adapter.
-  // ///
-  // /// Liftoff excels at performance-based rewarded and interstitial campaigns.
-  // ///
-  // /// See: https://developers.google.com/admob/flutter/mediation/liftoffmonetize
-  // void _applyLiftoffConsent({required bool hasConsent, required bool doNotSell}) {
-  //   try {
-  //     GmaMediationLiftoffmonetize().setGDPRStatus(hasConsent, null);
-  //     GmaMediationLiftoffmonetize().setCCPAStatus(!doNotSell);
-  //     GmaLogger.info('Liftoff Monetize — consent applied.');
-  //   } catch (e, st) {
-  //     GmaLogger.error('Liftoff consent error', e, st);
-  //   }
-  // }
+  /// Propagates consent to the **Liftoff Monetize (Vungle)** adapter.
+  ///
+  /// Liftoff excels at performance-based rewarded and interstitial campaigns.
+  ///
+  /// See: https://developers.google.com/admob/flutter/mediation/liftoffmonetize
+  void _applyLiftoffConsent({required bool hasConsent, required bool doNotSell}) {
+    try {
+      GmaMediationLiftoffmonetize().setGDPRStatus(hasConsent, null);
+      GmaMediationLiftoffmonetize().setCCPAStatus(!doNotSell);
+      GmaLogger.info('Liftoff Monetize — consent applied.');
+    } catch (e, st) {
+      GmaLogger.error('Liftoff consent error', e, st);
+    }
+  }
 
   /// Propagates consent to the **Meta Audience Network** adapter.
   ///
@@ -383,7 +384,9 @@ class MediationManager {
       // Registers the Meta adapter with the GMA mediation chain.
       // Meta reads ATT and consent automatically via the Facebook SDK.
       GmaMediationMeta();
-      GmaLogger.success('Meta Audience Network — adapter registered. Consent auto-managed by Meta SDK.');
+      GmaLogger.success(
+        'Meta Audience Network — adapter registered. Consent auto-managed by Meta SDK.',
+      );
     } catch (e, st) {
       GmaLogger.error('Meta consent error', e, st);
     }

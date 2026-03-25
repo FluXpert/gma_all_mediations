@@ -130,4 +130,14 @@ https://developers.facebook.com/docs/setting-up/platform-setup/ios/SKAdNetwork
 	<key>FacebookAdvertiserTrackingEnabled</key>
 	<true/>
 
-    
+
+
+# LiftOff Monetize Setup: https://developers.google.com/admob/flutter/mediation/liftoff-monetize
+
+Nothing required on Android side
+iOS setup required:
+https://support.vungle.com/hc/en-us/articles/360002925791-Integrate-Vungle-SDK-for-iOS#h_01KGGW4G4GK8SB6YF7P9B20DCR
+
+You only need to update Info.Plist: 
+Link: https://vungle-static-assets.s3.amazonaws.com/dashboard/admin/prod/skadnetworkids.xml
+
