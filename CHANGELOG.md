@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 0.0.2
+
+* **API Refinement & Encapsulation:** Simplified the public API surface by privatizing internal utilities (`_MediationManager`, `_GmaLogger`) and organizing the codebase using `part`/`part of` directives.
+* **Modernized Initialization:** Refactored the UMP and SDK initialization flows for better predictability and simpler asynchronous handling.
+* **Resilient Ads Initialisation:** Updated the consent flow to ensure that ad initialisation proceeds even if UMP or ATT requests fail, preventing blocked revenue due to non-fatal configuration issues.
+* **Comprehensive Testing:** Achieved significant test coverage with new unit tests for `GmaMediationConfig`, singleton logic, and mockable MethodChannel interactions.
+* **Enhanced Documentation:**
+  * Added a comprehensive **Mediation Platform Support** table in `README.md`.
+  * Detailed **iOS Info.plist** and **Android build.gradle** requirements for all 13+ supported networks.
+  * Expanded **SKAdNetwork ID** documentation with direct links to provider IDs.
+* **CI/CD & Quality Control:** Integrated **GitHub Workflows** for automated package health checks (`pana`) and added Semantic Pull Request validation.
+* **Project Maintenance:** Added repository funding configuration, resolved linting warnings, and synchronized the lock file for consistent builds.
+
 ## 0.0.1
 
 * **Initial Release:** Welcome to `gma_all_mediations`!
