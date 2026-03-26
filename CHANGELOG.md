@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.0.3
+
+* **Maintenance Release**: Updated package version to refresh and fix pending analysis on pub.dev.
+* **Refinement**: Cleaned up internal testing structures and optimized package metadata for a polished release state.
+
 ## 0.0.2
 
 * **API Refinement & Encapsulation:** Simplified the public API surface by privatizing internal utilities (`_MediationManager`, `_GmaLogger`) and organizing the codebase using `part`/`part of` directives.
