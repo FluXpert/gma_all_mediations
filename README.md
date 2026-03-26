@@ -5,9 +5,9 @@
 </h2>
 
 <p align="center">
-  <a href="https://github.com/FluXpert/gma_all_mediations/actions">
+  <!-- <a href="https://github.com/FluXpert/gma_all_mediations/actions">
     <img alt="Build Status" src="https://github.com/FluXpert/gma_all_mediations/workflows/build/badge.svg">
-  </a>
+  </a> -->
   <!-- <a href="https://github.com/FluXpert/gma_all_mediations/actions">
     <img alt="Code Coverage" src="https://raw.githubusercontent.com/FluXpert/gma_all_mediations/main/coverage_badge.svg">
   </a> -->
