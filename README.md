@@ -1,5 +1,30 @@
 # GMA All Mediations 🚀
 
+<h2 align="center">
+  Simplify Equality Comparisons
+</h2>
+
+<p align="center">
+  <a href="https://github.com/FluXpert/gma_all_mediations/actions">
+    <img alt="Build Status" src="https://github.com/FluXpert/gma_all_mediations/workflows/build/badge.svg">
+  </a>
+  <a href="https://github.com/FluXpert/gma_all_mediations/actions">
+    <img alt="Code Coverage" src="https://raw.githubusercontent.com/FluXpert/gma_all_mediations/main/coverage_badge.svg">
+  </a>
+  <a href="https://pub.dartlang.org/packages/gma_all_mediations">
+    <img alt="Pub Package" src="https://img.shields.io/pub/v/gma_all_mediations.svg">
+  </a>
+  <br/>
+  <a href="https://github.com/FluXpert/gma_all_mediations">
+    <img src="https://img.shields.io/github/stars/FluXpert/gma_all_mediations.svg?style=flat&logo=github&colorB=deeppink&label=stars" alt="Star on GitHub">
+  </a>
+  <a href="https://opensource.org/licenses/MIT">
+    <img alt="MIT License" src="https://img.shields.io/badge/License-MIT-blue.svg">
+  </a>
+</p>
+
+---
+
 A zero-config, ultra-robust Flutter package that automatically manages Google AdMob Mediation, native adapter registration, and consent propagation (GDPR/CCPA/ATT) for 13+ top ad networks. Stop editing your `MainActivity` or `AppDelegate` and stop writing manual consent bridges. Install the adapters, initialize the package, and you are done.
 
 > ⚠️ **IMPORTANT ACTION**: For all mediations to work properly and serve ads on production, **you MUST update your `app-ads.txt`** file on your developer website to include the IDs provided by each ad network.
