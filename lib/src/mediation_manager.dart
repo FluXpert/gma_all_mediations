@@ -85,9 +85,11 @@ class _MediationManager {
       return true;
     }
 
-    final ConsentStatus status = await ConsentInformation.instance.getConsentStatus();
+    final ConsentStatus status = await ConsentInformation.instance
+        .getConsentStatus();
 
-    final bool hasConsent = status == ConsentStatus.obtained || status == ConsentStatus.notRequired;
+    final bool hasConsent =
+        status == ConsentStatus.obtained || status == ConsentStatus.notRequired;
 
     _GmaLogger.info('UMP ConsentStatus: $status → hasConsent: $hasConsent');
 
@@ -99,7 +101,10 @@ class _MediationManager {
   // ──────────────────────────────────────────────────────────────────────────
 
   /// Propagates consent to the **AppLovin MAX** mediation adapter.
-  void _applyAppLovinConsent({required bool hasConsent, required bool doNotSell}) {
+  void _applyAppLovinConsent({
+    required bool hasConsent,
+    required bool doNotSell,
+  }) {
     try {
       GmaMediationApplovin().setHasUserConsent(hasConsent);
       GmaMediationApplovin().setDoNotSell(doNotSell);
@@ -121,13 +126,19 @@ class _MediationManager {
   }
 
   /// Propagates GDPR / CCPA consent to the **Chartboost** SDK natively.
-  Future<void> _applyChartboostConsent({required bool hasConsent, required bool doNotSell}) async {
+  Future<void> _applyChartboostConsent({
+    required bool hasConsent,
+    required bool doNotSell,
+  }) async {
     try {
       // Step 1: register adapter with the GMA mediation chain.
       GmaMediationChartboost();
 
       // Step 2: fire native consent via MethodChannel.
-      await _ChartboostConsentChannel.applyConsent(hasConsent: hasConsent, doNotSell: doNotSell);
+      await _ChartboostConsentChannel.applyConsent(
+        hasConsent: hasConsent,
+        doNotSell: doNotSell,
+      );
 
       _GmaLogger.success(
         'Chartboost — GDPR/CCPA consent applied natively. '
@@ -146,7 +157,8 @@ class _MediationManager {
   }) async {
     try {
       final String derivedPrivacyString = doNotSell ? '1YYN' : '1YNN';
-      final String effectivePrivacyString = usPrivacyStringData ?? derivedPrivacyString;
+      final String effectivePrivacyString =
+          usPrivacyStringData ?? derivedPrivacyString;
       await GmaMediationDTExchange().setUSPrivacyString(effectivePrivacyString);
       await GmaMediationDTExchange().setLgpdConsent(hasConsent);
 
@@ -157,7 +169,10 @@ class _MediationManager {
   }
 
   /// Propagates GDPR and CCPA consent to the **IronSource (LevelPlay)**
-  Future<void> _applyIronSourceConsent({required bool hasConsent, required bool doNotSell}) async {
+  Future<void> _applyIronSourceConsent({
+    required bool hasConsent,
+    required bool doNotSell,
+  }) async {
     try {
       await GmaMediationIronsource().setConsent(hasConsent);
       await GmaMediationIronsource().setDoNotSell(doNotSell);
@@ -168,7 +183,10 @@ class _MediationManager {
   }
 
   /// Propagates consent to the **Liftoff Monetize (Vungle)** adapter.
-  void _applyLiftoffConsent({required bool hasConsent, required bool doNotSell}) {
+  void _applyLiftoffConsent({
+    required bool hasConsent,
+    required bool doNotSell,
+  }) {
     try {
       GmaMediationLiftoffmonetize().setGDPRStatus(hasConsent, null);
       GmaMediationLiftoffmonetize().setCCPAStatus(!doNotSell);
@@ -189,7 +207,10 @@ class _MediationManager {
   }
 
   /// Propagates consent to the **InMobi** mediation adapter.
-  void _applyInMobiConsent({required bool hasConsent, required bool doNotSell}) {
+  void _applyInMobiConsent({
+    required bool hasConsent,
+    required bool doNotSell,
+  }) {
     try {
       GmaMediationInMobi();
       _GmaLogger.success('InMobi — adapter registered.');
@@ -199,7 +220,10 @@ class _MediationManager {
   }
 
   /// Propagates consent to the **Mintegral** mediation adapter.
-  void _applyMintegralConsent({required bool hasConsent, required bool doNotSell}) {
+  void _applyMintegralConsent({
+    required bool hasConsent,
+    required bool doNotSell,
+  }) {
     try {
       GmaMediationMintegral();
       _GmaLogger.success('Mintegral — adapter registered.');
@@ -209,7 +233,10 @@ class _MediationManager {
   }
 
   /// Propagates consent to the **Moloco** mediation adapter.
-  void _applyMolocoConsent({required bool hasConsent, required bool doNotSell}) {
+  void _applyMolocoConsent({
+    required bool hasConsent,
+    required bool doNotSell,
+  }) {
     try {
       GmaMediationMoloco();
       _GmaLogger.success('Moloco — adapter registered.');
@@ -219,7 +246,10 @@ class _MediationManager {
   }
 
   /// Propagates consent to the **myTarget** mediation adapter.
-  void _applyMyTargetConsent({required bool hasConsent, required bool doNotSell}) {
+  void _applyMyTargetConsent({
+    required bool hasConsent,
+    required bool doNotSell,
+  }) {
     try {
       GmaMediationmytarget();
       _GmaLogger.success('myTarget — adapter registered.');
@@ -229,7 +259,10 @@ class _MediationManager {
   }
 
   /// Propagates consent to the **Pangle** mediation adapter.
-  void _applyPangleConsent({required bool hasConsent, required bool doNotSell}) {
+  void _applyPangleConsent({
+    required bool hasConsent,
+    required bool doNotSell,
+  }) {
     try {
       GmaMediationPangle();
       _GmaLogger.success('Pangle — adapter registered.');
@@ -239,7 +272,10 @@ class _MediationManager {
   }
 
   /// Propagates consent to the **PubMatic** mediation adapter.
-  void _applyPubMaticConsent({required bool hasConsent, required bool doNotSell}) {
+  void _applyPubMaticConsent({
+    required bool hasConsent,
+    required bool doNotSell,
+  }) {
     try {
       GmaMediationPubmatic();
       _GmaLogger.success('PubMatic — adapter registered.');

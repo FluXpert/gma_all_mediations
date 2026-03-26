@@ -11,7 +11,9 @@ part of '../internal.dart';
 class _MetaConsentChannel {
   _MetaConsentChannel._(); // Prevent instantiation
 
-  static const MethodChannel _channel = MethodChannel('gma_all_mediations/meta_consent');
+  static const MethodChannel _channel = MethodChannel(
+    'gma_all_mediations/meta_consent',
+  );
 
   /// Forwards the iOS ATT authorization status to the Meta SDK.
   ///

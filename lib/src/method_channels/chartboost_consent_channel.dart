@@ -17,7 +17,9 @@ part of '../internal.dart';
 class _ChartboostConsentChannel {
   _ChartboostConsentChannel._(); // Prevent instantiation
 
-  static const MethodChannel _channel = MethodChannel('gma_all_mediations/chartboost_consent');
+  static const MethodChannel _channel = MethodChannel(
+    'gma_all_mediations/chartboost_consent',
+  );
 
   /// Sends GDPR and CCPA consent signals to the Chartboost SDK natively.
   ///
@@ -29,7 +31,10 @@ class _ChartboostConsentChannel {
   /// This method is a no-op on platforms other than iOS and Android, and
   /// gracefully handles [MissingPluginException] so that unit-test
   /// environments (which have no platform channel) are never broken.
-  static Future<void> applyConsent({required bool hasConsent, required bool doNotSell}) async {
+  static Future<void> applyConsent({
+    required bool hasConsent,
+    required bool doNotSell,
+  }) async {
     if (!Platform.isIOS && !Platform.isAndroid) return;
 
     try {
