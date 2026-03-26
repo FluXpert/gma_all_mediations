@@ -10,7 +10,6 @@
   <a href="https://pub.dartlang.org/packages/gma_all_mediations">
     <img alt="Pub Package" src="https://img.shields.io/pub/v/gma_all_mediations.svg">
   </a>
-  <br/>
   <a href="https://github.com/FluXpert/gma_all_mediations">
     <img src="https://img.shields.io/github/stars/FluXpert/gma_all_mediations.svg?style=flat&logo=github&colorB=deeppink&label=stars" alt="Star on GitHub">
   </a>
