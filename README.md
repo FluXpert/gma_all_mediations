@@ -1,7 +1,7 @@
 # GMA All Mediations 🚀
 
 <h2 align="center">
-  Simplify Equality Comparisons
+  Simplify AdMob Mediation
 </h2>
 
 <p align="center">
