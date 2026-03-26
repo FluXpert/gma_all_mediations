@@ -1,9 +1,5 @@
 # GMA All Mediations 🚀
 
-<h2 align="center">
-  Simplify AdMob Mediation
-</h2>
-
 <p align="center">
   <!-- <a href="https://github.com/FluXpert/gma_all_mediations/actions">
     <img alt="Build Status" src="https://github.com/FluXpert/gma_all_mediations/workflows/build/badge.svg">
