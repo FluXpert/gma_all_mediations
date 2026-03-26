@@ -1,56 +1,42 @@
-import 'dart:developer' as developer;
+part of 'internal.dart';
 
-/// Internal logger for the `gma_all_mediations` package.
+/// Internal logger for the **GMA All Mediations** package.
 ///
-/// Provides structured, tagged logging with optional log levels.
-/// All messages are prefixed with `[GMA]` for easy filtering in DevTools.
+/// Use [_GmaLogger.info], [_GmaLogger.success], and [_GmaLogger.error] to provide
+/// developer feedback during the mediation and consent flow.
 ///
-/// Enable or disable logging via [GmaLogger.init]. In production builds,
-/// always pass `debug: false` to [GmaMediationConfig] so no logs appear
-/// in the console and binary size stays lean.
-class GmaLogger {
-  GmaLogger._(); // Prevent instantiation
+/// Logs are only printed when [GmaMediationConfig.debug] is `true`.
+class _GmaLogger {
+  _GmaLogger._(); // Prevent instantiation
 
-  static bool _enabled = false;
+  static bool _enabled = true;
 
-  /// Initialises the logger for the package.
-  ///
-  /// Call this once, typically inside [GmaAllMediations.initialize].
-  ///
-  /// [enable] – set to `true` during development/debugging,
-  /// `false` for release builds to silence all output.
+  /// Initialises the logger.
   static void init({required bool enable}) {
     _enabled = enable;
   }
 
-  /// Logs an informational [message].
-  ///
-  /// Only emits output when the logger is enabled.
+  /// Prints a standard informational message.
   static void info(String message) {
-    if (_enabled) developer.log('ℹ️  $message', name: 'GMA');
+    if (_enabled) debugPrint('[GMA] ℹ️  $message');
   }
 
-  /// Logs a success / milestone [message].
+  /// Prints a success message (green circle).
   static void success(String message) {
-    if (_enabled) developer.log('✅  $message', name: 'GMA');
+    if (_enabled) debugPrint('[GMA] ✅  $message');
   }
 
-  /// Logs a warning [message].
-  ///
-  /// Warnings are non-fatal but worth investigating.
+  /// Prints a warning message (yellow triangle).
   static void warn(String message) {
-    if (_enabled) developer.log('⚠️  $message', name: 'GMA');
+    if (_enabled) debugPrint('[GMA] ⚠️  $message');
   }
 
-  /// Logs an error [message] with an optional [error] object and [stackTrace].
-  ///
-  /// Always emits, regardless of [_enabled], so errors are never swallowed.
-  static void error(String message, [Object? error, StackTrace? stackTrace]) {
-    developer.log(
-      '❌  $message',
-      name: 'GMA',
-      error: error,
-      stackTrace: stackTrace,
-    );
+  /// Prints an error message with optional exception and stacktrace details.
+  static void error(String message, [dynamic error, StackTrace? stackTrace]) {
+    if (!_enabled) return;
+
+    debugPrint('[GMA] ❌  $message');
+    if (error != null) debugPrint('[GMA]     Error: $error');
+    if (stackTrace != null) debugPrint('[GMA]     $stackTrace');
   }
 }

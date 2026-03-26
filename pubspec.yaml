@@ -1,6 +1,6 @@
 name: gma_all_mediations
 description: "A zero-config AdMob mediation suite for Flutter. Automates UMP/GDPR/CCPA consent, ATT prompts, and 13+ native adapters."
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/FluXpert/gma_all_mediations
 repository: https://github.com/FluXpert/gma_all_mediations
 

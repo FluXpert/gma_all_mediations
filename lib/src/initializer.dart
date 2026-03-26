@@ -1,13 +1,4 @@
-import 'dart:io' show Platform;
-
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
-import 'package:flutter/foundation.dart' show debugPrint;
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-
-import 'config.dart';
-import 'logger.dart';
-import 'mediation_manager.dart';
-import 'meta_consent_channel.dart';
+part of 'internal.dart';
 
 class GmaAllMediations {
   // ── Singleton ──────────────────────────────────────────────────────────────
@@ -58,15 +49,15 @@ class GmaAllMediations {
   Future<void> initialize({GmaMediationConfig? config}) async {
     _config = config ?? GmaMediationConfig();
 
-    GmaLogger.init(enable: _resolvedConfig.debug);
+    _GmaLogger.init(enable: _resolvedConfig.debug);
 
     if (_initialized) {
-      GmaLogger.warn('GmaAllMediations is already initialised — skipping.');
+      _GmaLogger.warn('GmaAllMediations is already initialised — skipping.');
       return;
     }
 
-    GmaLogger.info('Starting GMA All Mediations initialisation…');
-    GmaLogger.info('Config: $_config');
+    _GmaLogger.info('Starting GMA All Mediations initialisation…');
+    _GmaLogger.info('Config: $_config');
 
     await _requestConsentAndInitialise();
   }
@@ -78,24 +69,24 @@ class GmaAllMediations {
   /// After the consent flow completes (or fails), [_initializeAdsSdk] is
   /// called so ads are always loaded — even when the user dismisses the form.
   Future<void> _requestConsentAndInitialise() async {
-    GmaLogger.info('Requesting UMP consent info update…');
+    _GmaLogger.info('Requesting UMP consent info update…');
 
     ConsentInformation.instance.requestConsentInfoUpdate(
       _resolvedConfig.consentRequestParameters ?? ConsentRequestParameters(),
       () async {
         // Success — decide whether to show the consent form.
-        GmaLogger.info('Consent info update succeeded.');
+        _GmaLogger.info('Consent info update succeeded.');
 
         if (await ConsentInformation.instance.isConsentFormAvailable()) {
           await _loadAndShowConsentForm();
         } else {
-          GmaLogger.info('No consent form required — proceeding to ad init.');
+          _GmaLogger.info('No consent form required — proceeding to ad init.');
           await _initializeAdsSdk();
         }
       },
       (FormError requestError) async {
         // Non-fatal: log the error and continue so revenue is not blocked.
-        GmaLogger.error(
+        _GmaLogger.error(
           'Consent info update failed: ${requestError.message}. '
           'Proceeding without consent form.',
         );
@@ -106,17 +97,17 @@ class GmaAllMediations {
 
   /// Loads and shows the UMP consent form, then proceeds to init ads.
   Future<void> _loadAndShowConsentForm() async {
-    GmaLogger.info('Loading UMP consent form…');
+    _GmaLogger.info('Loading UMP consent form…');
 
     ConsentForm.loadAndShowConsentFormIfRequired((FormError? formError) async {
       if (formError != null) {
-        GmaLogger.error(
+        _GmaLogger.error(
           'Failed to load/show consent form: ${formError.message}. '
           'Proceeding without form.',
         );
         // Proceed even on error so we don't permanently block ads.
       } else {
-        GmaLogger.success('Consent form dismissed by user.');
+        _GmaLogger.success('Consent form dismissed by user.');
       }
 
       // Always proceed to ad initialisation after the form interaction.
@@ -128,7 +119,7 @@ class GmaAllMediations {
   Future<void> _initializeAdsSdk() async {
     // Guard against being called multiple times from parallel consent paths.
     if (_initialized) {
-      GmaLogger.warn('_initializeAdsSdk called but already initialised.');
+      _GmaLogger.warn('_initializeAdsSdk called but already initialised.');
       return;
     }
 
@@ -137,7 +128,7 @@ class GmaAllMediations {
     await _startMobileAdsSdk();
 
     _initialized = true;
-    GmaLogger.success('GMA All Mediations fully initialised. 🚀');
+    _GmaLogger.success('GMA All Mediations fully initialised. 🚀');
   }
 
   /// Requests ATT authorisation on iOS 14.5+.
@@ -148,30 +139,30 @@ class GmaAllMediations {
   Future<void> _requestAppTrackingTransparency() async {
     if (!Platform.isIOS || !_resolvedConfig.enableATT) return;
 
-    GmaLogger.info('Requesting App Tracking Transparency authorisation…');
+    _GmaLogger.info('Requesting App Tracking Transparency authorisation…');
     try {
       final TrackingStatus status = await AppTrackingTransparency.requestTrackingAuthorization();
-      GmaLogger.info('ATT status: $status');
+      _GmaLogger.info('ATT status: $status');
 
       final bool isAuthorized = status == TrackingStatus.authorized;
 
       // Meta Audience Network requires this explicit flag on iOS 14+.
-      await MetaConsentChannel.setAdvertiserTrackingEnabled(isAuthorized);
+      await _MetaConsentChannel.setAdvertiserTrackingEnabled(isAuthorized);
 
       if (isAuthorized) {
-        GmaLogger.success('ATT granted — personalised iOS ads enabled.');
+        _GmaLogger.success('ATT granted — personalised iOS ads enabled.');
       } else {
-        GmaLogger.warn('ATT not granted ($status). iOS ads may be limited in targeting.');
+        _GmaLogger.warn('ATT not granted ($status). iOS ads may be limited in targeting.');
       }
     } catch (e, st) {
-      GmaLogger.error('ATT request failed', e, st);
+      _GmaLogger.error('ATT request failed', e, st);
     }
   }
 
   /// Propagates GDPR / CCPA consent to all active mediation adapters.
   Future<void> _applyMediationConsent() async {
-    GmaLogger.info('Applying consent signals to mediation adapters…');
-    await MediationManager.instance.applyConsentToAdapters(
+    _GmaLogger.info('Applying consent signals to mediation adapters…');
+    await _MediationManager.instance.applyConsentToAdapters(
       forceMediationConsent: _resolvedConfig.forceMediationConsent,
       doNotSell: _resolvedConfig.doNotSell,
     );
@@ -179,14 +170,14 @@ class GmaAllMediations {
 
   /// Applies the request configuration and initialises the AdMob SDK.
   Future<void> _startMobileAdsSdk() async {
-    GmaLogger.info('Initialising Google Mobile Ads SDK…');
+    _GmaLogger.info('Initialising Google Mobile Ads SDK…');
     try {
       MobileAds.instance.updateRequestConfiguration(_resolvedConfig.requestConfiguration);
       final InitializationStatus status = await MobileAds.instance.initialize();
       _logAdapterInitStatus(status);
-      GmaLogger.success('Mobile Ads SDK initialised successfully.');
+      _GmaLogger.success('Mobile Ads SDK initialised successfully.');
     } catch (e, st) {
-      GmaLogger.error('Mobile Ads SDK initialisation failed', e, st);
+      _GmaLogger.error('Mobile Ads SDK initialisation failed', e, st);
       // Re-throw so callers can react if needed.
       rethrow;
     }

@@ -1,4 +1,4 @@
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+part of 'internal.dart';
 
 /// Configuration model for the **GMA All Mediations** package.
 ///
@@ -35,7 +35,7 @@ class GmaMediationConfig {
   /// eCPMs by 20–50 % on iOS. Defaults to `true`.
   final bool enableATT;
 
-  /// Enables verbose logging via [GmaLogger].
+  /// Enables verbose logging via [_GmaLogger].
   ///
   /// Set to `false` in production to keep the console clean and to avoid
   /// leaking debug information in release builds. Defaults to `true`.

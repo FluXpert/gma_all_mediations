@@ -1,8 +1,4 @@
-import 'dart:io' show Platform;
-
-import 'package:flutter/services.dart';
-
-import 'logger.dart';
+part of '../internal.dart';
 
 /// Internal MethodChannel bridge that applies Meta (Facebook) consent natively on iOS.
 ///
@@ -12,8 +8,8 @@ import 'logger.dart';
 /// This channel invokes that native method automatically based on the ATT result
 /// obtained in `GmaAllMediations.initialize()`. It uses reflection on the iOS
 /// side so the package remains free of compile-time dependencies on the Meta SDK.
-class MetaConsentChannel {
-  MetaConsentChannel._(); // Prevent instantiation
+class _MetaConsentChannel {
+  _MetaConsentChannel._(); // Prevent instantiation
 
   static const MethodChannel _channel = MethodChannel('gma_all_mediations/meta_consent');
 
@@ -30,16 +26,16 @@ class MetaConsentChannel {
       await _channel.invokeMethod<void>('setAdvertiserTrackingEnabled', {
         'trackingEnabled': trackingEnabled,
       });
-      GmaLogger.success(
+      _GmaLogger.success(
         'Meta Audience Network — native advertiser tracking set to $trackingEnabled.',
       );
     } on MissingPluginException {
-      GmaLogger.warn(
+      _GmaLogger.warn(
         'MetaConsentChannel: MissingPluginException — channel not '
         'registered (likely running in test environment).',
       );
     } catch (e, st) {
-      GmaLogger.error('MetaConsentChannel: native call failed', e, st);
+      _GmaLogger.error('MetaConsentChannel: native call failed', e, st);
     }
   }
 }

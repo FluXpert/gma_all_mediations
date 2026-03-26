@@ -5,14 +5,9 @@
 /// Tracking Transparency (ATT) handling, and AdMob SDK initialisation — all
 /// in a single [GmaAllMediations.initialize] call.
 ///
-/// ### Supported adapters (enable in mediation_manager.dart)
-/// * ✅ AppLovin MAX           – `gma_mediation_applovin`
-/// * 🔜 Unity Ads             – `gma_mediation_unity`
-/// * 🔜 IronSource (LevelPlay)– `gma_mediation_ironsource`
-/// * 🔜 Liftoff Monetize      – `gma_mediation_liftoffmonetize`
-/// * 🔜 Meta Audience Network – `gma_mediation_meta`
-/// * 🔜 InMobi               – `gma_mediation_inmobi`
-/// * 🔜 Mintegral            – `gma_mediation_mintegral`
+/// Supported ad networks: AppLovin, Chartboost, DT Exchange, InMobi, IronSource,
+/// Liftoff Monetize, Meta Audience Network, Mintegral, Moloco, myTarget,
+/// Pangle, PubMatic, and Unity Ads.
 ///
 /// ### Quick start
 /// ```dart
@@ -36,5 +31,4 @@
 /// ```
 library;
 
-export 'src/config.dart';
-export 'src/initializer.dart';
+export 'src/internal.dart';

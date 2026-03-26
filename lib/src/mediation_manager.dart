@@ -1,4 +1,5 @@
-/// ────────────────────────────────────────────────────────────────────────────
+part of 'internal.dart';
+
 /// Responsible for applying GDPR / CCPA consent signals to every active
 /// mediation adapter. Add new adapters here as you integrate them — the
 /// pattern is always the same:
@@ -17,50 +18,13 @@
 /// consent, they drop out of the waterfall, dramatically reducing competition
 /// and therefore eCPMs. Correct consent propagation is one of the highest-ROI
 /// tasks in any AdMob mediation setup.
-/// ────────────────────────────────────────────────────────────────────────────
-library;
-
-import 'package:gma_all_mediations/src/logger.dart';
-import 'package:gma_mediation_applovin/gma_mediation_applovin.dart';
-import 'package:gma_mediation_chartboost/gma_mediation_chartboost.dart';
-import 'package:gma_mediation_dtexchange/gma_mediation_dtexchange.dart';
-import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
-import 'package:gma_mediation_ironsource/gma_mediation_ironsource.dart';
-import 'package:gma_mediation_liftoffmonetize/gma_mediation_liftoffmonetize.dart';
-import 'package:gma_mediation_meta/gma_mediation_meta.dart';
-import 'package:gma_mediation_mintegral/gma_mediation_mintegral.dart';
-import 'package:gma_mediation_moloco/gma_mediation_moloco.dart';
-import 'package:gma_mediation_mytarget/gma_mediation_mytarget.dart';
-import 'package:gma_mediation_pangle/gma_mediation_pangle.dart';
-import 'package:gma_mediation_pubmatic/gma_mediation_pubmatic.dart';
-// import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
-// import 'package:gma_mediation_ironsource/gma_mediation_ironsource.dart';
-// import 'package:gma_mediation_liftoffmonetize/gma_mediation_liftoffmonetize.dart';
-// import 'package:gma_mediation_meta/gma_mediation_meta.dart';
-// import 'package:gma_mediation_mintegral/gma_mediation_mintegral.dart';
-import 'package:gma_mediation_unity/gma_mediation_unity.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart' show ConsentInformation, ConsentStatus;
-
-import 'chartboost_consent_channel.dart';
-
-/// Manages consent propagation to all active mediation adapters.
-///
-/// This class is **internal** to the package. Consumers interact only with
-/// [GmaAllMediations]; there is no need to use [MediationManager] directly.
-///
-/// ### Adding a new adapter
-/// ```dart
-/// // 1. Add the dependency to pubspec.yaml
-/// // 2. Import the adapter package at the top of this file
-/// // 3. Follow the pattern already used by AppLovin below
-/// ```
-class MediationManager {
+class _MediationManager {
   // ── Singleton ──────────────────────────────────────────────────────────────
 
   /// Shared singleton instance.
-  static final MediationManager instance = MediationManager._();
+  static final _MediationManager instance = _MediationManager._();
 
-  MediationManager._();
+  _MediationManager._();
 
   // ── Public API ─────────────────────────────────────────────────────────────
 
@@ -82,7 +46,7 @@ class MediationManager {
   }) async {
     final bool hasConsent = await _resolveConsentSignal(forceMediationConsent);
 
-    GmaLogger.info(
+    _GmaLogger.info(
       'Applying consent to adapters — hasConsent: $hasConsent, '
       'doNotSell: $doNotSell',
     );
@@ -101,7 +65,7 @@ class MediationManager {
     _applyPangleConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyPubMaticConsent(hasConsent: hasConsent, doNotSell: doNotSell);
 
-    GmaLogger.success('Consent applied to all active mediation adapters.');
+    _GmaLogger.success('Consent applied to all active mediation adapters.');
   }
 
   // ── Private helpers ────────────────────────────────────────────────────────
@@ -114,7 +78,7 @@ class MediationManager {
   /// * [forceConsent] is `true` (developer override).
   Future<bool> _resolveConsentSignal(bool forceConsent) async {
     if (forceConsent) {
-      GmaLogger.warn(
+      _GmaLogger.warn(
         'forceMediationConsent is true — skipping UMP consent check. '
         'Ensure this is legally valid for your audience.',
       );
@@ -125,7 +89,7 @@ class MediationManager {
 
     final bool hasConsent = status == ConsentStatus.obtained || status == ConsentStatus.notRequired;
 
-    GmaLogger.info('UMP ConsentStatus: $status → hasConsent: $hasConsent');
+    _GmaLogger.info('UMP ConsentStatus: $status → hasConsent: $hasConsent');
 
     return hasConsent;
   }
@@ -135,413 +99,152 @@ class MediationManager {
   // ──────────────────────────────────────────────────────────────────────────
 
   /// Propagates consent to the **AppLovin MAX** mediation adapter.
-  ///
-  /// AppLovin is consistently one of the highest-CPM networks for interstitials
-  /// and rewarded ads. Ensure your AppLovin SDK key is set in
-  /// `AndroidManifest.xml` and `Info.plist`.
-  ///
-  /// See: https://developers.google.com/admob/flutter/mediation/applovin
   void _applyAppLovinConsent({required bool hasConsent, required bool doNotSell}) {
     try {
       GmaMediationApplovin().setHasUserConsent(hasConsent);
       GmaMediationApplovin().setDoNotSell(doNotSell);
-      GmaLogger.info('AppLovin — consent applied.');
+      _GmaLogger.info('AppLovin — consent applied.');
     } catch (e, st) {
-      GmaLogger.error('AppLovin consent error', e, st);
+      _GmaLogger.error('AppLovin consent error', e, st);
     }
   }
 
-  // ── Template methods for future adapters ──────────────────────────────────
-  // Un-comment and fill in when you add the corresponding package.
-
   /// Propagates consent to the **Unity Ads** mediation adapter.
-  ///
-  /// Unity LevelPlay is a top performer for gaming apps with rewarded-video
-  /// inventory. GDPR and CCPA must both be set separately.
-  ///
-  /// See: https://developers.google.com/admob/flutter/mediation/unity
   void _applyUnityConsent({required bool hasConsent, required bool doNotSell}) {
     try {
       GmaMediationUnity().setGDPRConsent(hasConsent);
       GmaMediationUnity().setCCPAConsent(!doNotSell);
-      GmaLogger.info('Unity Ads — consent applied.');
+      _GmaLogger.info('Unity Ads — consent applied.');
     } catch (e, st) {
-      GmaLogger.error('Unity consent error', e, st);
+      _GmaLogger.error('Unity consent error', e, st);
     }
   }
 
   /// Propagates GDPR / CCPA consent to the **Chartboost** SDK natively.
-  ///
-  /// ### How it works
-  /// The `gma_mediation_chartboost` Flutter package intentionally exposes no
-  /// Dart-level consent API — `GmaMediationChartboost` is an empty class used
-  /// only for platform compatibility. This method bridges that gap in two steps:
-  ///
-  /// 1. Calls `GmaMediationChartboost()` to register the adapter with the
-  ///    Google Mobile Ads mediation chain.
-  /// 2. Invokes [ChartboostConsentChannel.applyConsent] which fires a
-  ///    platform [MethodChannel] call handled by native code **inside this
-  ///    package** — no `AppDelegate` or `MainActivity` changes needed by the
-  ///    consumer.
-  ///
-  /// ### Per-platform behaviour
-  /// | Platform | What happens |
-  /// |----------|-------------|
-  /// | **iOS**  | `GmaAllMediationsPlugin.swift` calls `Chartboost.addDataUseConsent(CBGDPRDataUseConsent)` and `Chartboost.addDataUseConsent(CBCCPADataUseConsent)` before the first ad request. |
-  /// | **Android** | No-op — the Chartboost Android adapter reads consent automatically from the `RequestConfiguration` already applied to `MobileAds`. |
-  ///
-  /// ### Revenue impact 💶
-  /// Without the correct GDPR signal, Chartboost drops out of the auction
-  /// entirely for EEA users, causing a direct loss of fill rate and eCPM.
-  /// This method fires automatically during [GmaAllMediations.initialize] so
-  /// consent is always set before the first ad request.
-  ///
-  /// See: https://developers.google.com/admob/flutter/mediation/chartboost
   Future<void> _applyChartboostConsent({required bool hasConsent, required bool doNotSell}) async {
     try {
       // Step 1: register adapter with the GMA mediation chain.
       GmaMediationChartboost();
 
       // Step 2: fire native consent via MethodChannel.
-      await ChartboostConsentChannel.applyConsent(hasConsent: hasConsent, doNotSell: doNotSell);
+      await _ChartboostConsentChannel.applyConsent(hasConsent: hasConsent, doNotSell: doNotSell);
 
-      GmaLogger.success(
+      _GmaLogger.success(
         'Chartboost — GDPR/CCPA consent applied natively. '
         'hasConsent: $hasConsent, doNotSell: $doNotSell',
       );
     } catch (e, st) {
-      GmaLogger.error('Chartboost consent error', e, st);
+      _GmaLogger.error('Chartboost consent error', e, st);
     }
   }
 
   /// Propagates consent signals to the **DT Exchange (Fyber)** mediation adapter.
-  ///
-  /// DT Exchange supports two independent privacy frameworks — CCPA (via US
-  /// Privacy String) and LGPD (Brazil). Both are derived automatically from
-  /// existing [GmaMediationConfig] values so no extra config fields are needed.
-  ///
-  /// ---
-  ///
-  /// ### US Privacy String (CCPA / US State Laws)
-  ///
-  /// The [IAB CCPA Compliance Framework](https://iabtechlab.com/standards/ccpa/)
-  /// defines a standardised 4-character string to encode the user's US privacy
-  /// choices:
-  ///
-  /// | Char | Field | Meaning |
-  /// |------|-------|---------|
-  /// | `1`  | Version | Always `"1"` (current spec) |
-  /// | `Y`  | User notified | User was shown a privacy notice |
-  /// | `N`/`Y` | Opted out of sale | `"N"` = sale allowed, `"Y"` = Do Not Sell |
-  /// | `N`  | LSPA | Not applicable for most apps |
-  ///
-  /// **Derived automatically from [doNotSell] unless [usPrivacyStringData] is provided:**
-  /// * `doNotSell = false` → `"1YNN"` (sale permitted)
-  /// * `doNotSell = true`  → `"1YYN"` (Do Not Sell — opt-out)
-  ///
-  /// #### [usPrivacyStringData] — optional override
-  /// Supply a custom IAB US Privacy String when your app manages US state
-  /// privacy consent through a dedicated CMP or other mechanism. When provided,
-  /// it takes precedence over the value derived from [doNotSell]. Pass `null`
-  /// (the default) to use the automatically derived value.
-  ///
-  /// ```dart
-  /// // Example: provide an explicit string from your CMP
-  /// _applyDTExchange(
-  ///   hasConsent: true,
-  ///   doNotSell: false,
-  ///   usPrivacyStringData: '1YNN',  // custom override
-  /// );
-  /// ```
-  ///
-  /// ### LGPD (Brazil — Lei Geral de Proteção de Dados)
-  ///
-  /// Brazil's privacy law operates similarly to GDPR. Mapped directly from
-  /// [hasConsent]: `true` = consent granted; `false` = not granted.
-  /// Harmless no-op for apps that do not operate in Brazil.
-  ///
-  /// ### Revenue impact 💶
-  /// DT Exchange is a strong performer for interstitials and rewarded video,
-  /// particularly in Latin America, Europe, and South-East Asia. Missing US
-  /// Privacy or LGPD signals can cause DT Exchange to serve limited or no
-  /// ads in those regions, directly reducing fill rate and eCPM.
-  ///
-  /// See: https://developers.google.com/admob/flutter/mediation/dt-exchange
   Future<void> _applyDTExchange({
     required bool hasConsent,
     required bool doNotSell,
     String? usPrivacyStringData,
   }) async {
     try {
-      // ── US Privacy String (CCPA & US state laws) ─────────────────────────
-      // Default derived from doNotSell: "1YNN" = sale allowed | "1YYN" = Do Not Sell.
-      // usPrivacyStringData takes precedence when supplied by the caller.
       final String derivedPrivacyString = doNotSell ? '1YYN' : '1YNN';
       final String effectivePrivacyString = usPrivacyStringData ?? derivedPrivacyString;
       await GmaMediationDTExchange().setUSPrivacyString(effectivePrivacyString);
-
-      // ── LGPD (Brazil) ─────────────────────────────────────────────────────
-      // Maps hasConsent directly: true = consent granted, false = not granted.
       await GmaMediationDTExchange().setLgpdConsent(hasConsent);
 
-      GmaLogger.success(
-        'DT Exchange — consent applied. '
-        'usPrivacyString: $effectivePrivacyString '
-        '(${usPrivacyStringData != null ? 'custom' : 'derived from doNotSell'}), '
-        'lgpdConsent: $hasConsent',
-      );
+      _GmaLogger.success('DT Exchange — consent applied.');
     } catch (e, st) {
-      GmaLogger.error('DT Exchange consent error', e, st);
+      _GmaLogger.error('DT Exchange consent error', e, st);
     }
   }
 
   /// Propagates GDPR and CCPA consent to the **IronSource (LevelPlay)**
-  /// mediation adapter.
-  ///
-  /// Unlike most adapters, IronSource exposes real Dart-level consent setters
-  /// via the `gma_mediation_ironsource` package:
-  ///
-  /// * `setConsent(bool)` — GDPR: `true` = user consented, `false` = not consented.
-  /// * `setDoNotSell(bool)` — CCPA: `true` = Do Not Sell (opt-out), `false` = permitted.
-  ///
-  /// Both are mapped directly from the resolved [hasConsent] and [doNotSell]
-  /// values and are called automatically before the first ad is loaded.
-  ///
-  /// ---
-  ///
-  /// ### Android setup summary
-  ///
-  /// | Requirement | Status |
-  /// |-------------|--------|
-  /// | GDPR / CCPA consent (`setConsent`, `setDoNotSell`) | ✅ Auto — called here |
-  /// | ProGuard rules | ✅ Auto — `consumerProguardFiles` in `android/build.gradle` |
-  /// | Activity lifecycle (`onResume` / `onPause`) | ✅ Auto — `IronSourceLifecycleObserver` registered via `Application.ActivityLifecycleCallbacks` + reflection |
-  /// | Maven repository (`https://android-sdk.is.com/`) | ⚠️ Manual — add to host app's `android/settings.gradle` |
-  ///
-  /// ### ⚠️ Only manual step: Maven repository
-  /// Modern Flutter Android projects use `dependencyResolutionManagement` in
-  /// `settings.gradle`, which cannot be injected by a plugin. Add the following
-  /// to your host app's `android/settings.gradle`:
-  /// ```groovy
-  /// dependencyResolutionManagement {
-  ///   repositories {
-  ///     // ... existing repos ...
-  ///     maven { url = uri("https://android-sdk.is.com/") }
-  ///     maven { url = uri("https://dl-maven-android.mintegral.com/repository/mbridge_android_sdk_oversea") }
-  ///   }
-  /// }
-  /// ```
-  ///
-  /// ### Revenue impact 💶
-  /// IronSource LevelPlay is one of the highest-performing networks for
-  /// rewarded video and interstitials globally. All lifecycle and consent
-  /// signals are now wired up automatically by this package.
-  ///
-  /// See: https://developers.google.com/admob/flutter/mediation/ironsource
-
   Future<void> _applyIronSourceConsent({required bool hasConsent, required bool doNotSell}) async {
     try {
-      // GDPR: true = user has consented to personalised ads.
       await GmaMediationIronsource().setConsent(hasConsent);
-
-      // CCPA: true = Do Not Sell (user opted out of sale of personal data).
       await GmaMediationIronsource().setDoNotSell(doNotSell);
-
-      GmaLogger.success(
-        'IronSource — consent applied. '
-        'hasConsent: $hasConsent, doNotSell: $doNotSell',
-      );
+      _GmaLogger.success('IronSource — consent applied.');
     } catch (e, st) {
-      GmaLogger.error('IronSource consent error', e, st);
+      _GmaLogger.error('IronSource consent error', e, st);
     }
   }
 
   /// Propagates consent to the **Liftoff Monetize (Vungle)** adapter.
-  ///
-  /// The `gma_mediation_liftoffmonetize` package provides explicit Dart-level
-  /// privacy setters for GDPR and CCPA.
-  ///
-  /// - **GDPR**: `hasConsent` is forwarded as a boolean (`null` message version).
-  /// - **CCPA**: mapped inversely (`!doNotSell`), where `false` means opted out.
-  ///
-  /// ### Revenue impact 💶
-  /// Liftoff excels at performance-based rewarded and interstitial campaigns.
-  /// Proper consent maximizes fill rates for these lucrative ad formats.
-  ///
-  /// See: https://developers.google.com/admob/flutter/mediation/liftoff-monetize
   void _applyLiftoffConsent({required bool hasConsent, required bool doNotSell}) {
     try {
-      // CCPA status: true = opted in (can sell), false = opted out (do not sell)
       GmaMediationLiftoffmonetize().setGDPRStatus(hasConsent, null);
       GmaMediationLiftoffmonetize().setCCPAStatus(!doNotSell);
-      GmaLogger.success('Liftoff Monetize — GDPR and CCPA consent applied.');
+      _GmaLogger.success('Liftoff Monetize — GDPR and CCPA consent applied.');
     } catch (e, st) {
-      GmaLogger.error('Liftoff consent error', e, st);
+      _GmaLogger.error('Liftoff consent error', e, st);
     }
   }
 
   /// Propagates consent to the **Meta Audience Network** adapter.
-  ///
-  /// The `gma_mediation_meta` Flutter package does not expose Dart-level
-  /// consent setters. Instead, instantiating `GmaMediationMeta()` registers
-  /// the adapter with the Google Mobile Ads mediation chain.
-  ///
-  /// Meta (Facebook) reads App Tracking Transparency (ATT) and GDPR consent
-  /// signals automatically at the native OS level via the Facebook SDK, and
-  /// through AdMob's automatic consent forwarding.
-  ///
-  /// ### Revenue impact 💶
-  /// Meta Audience Network is a dominant advertiser with high fill rates
-  /// globally, especially for banner and interstitial formats. Registration
-  /// is all that is required for the SDK to begin serving personalized ads
-  /// once the user has consented via UMP/ATT.
-  ///
-  /// See: https://developers.google.com/admob/flutter/mediation/meta
   void _applyMetaConsent({required bool hasConsent, required bool doNotSell}) {
     try {
-      // Registers the Meta adapter with the GMA mediation chain.
-      // Meta reads ATT and consent automatically via the Facebook SDK.
       GmaMediationMeta();
-      GmaLogger.success(
-        'Meta Audience Network — adapter registered. Consent auto-managed by Meta SDK.',
-      );
+      _GmaLogger.success('Meta Audience Network — adapter registered.');
     } catch (e, st) {
-      GmaLogger.error('Meta consent error', e, st);
+      _GmaLogger.error('Meta consent error', e, st);
     }
   }
 
   /// Propagates consent to the **InMobi** mediation adapter.
-  ///
-  /// The `gma_mediation_inmobi` Flutter class is intentionally empty (same
-  /// pattern as Chartboost). Instantiating it here registers the InMobi
-  /// adapter with the Google Mobile Ads mediation chain. No Dart-level consent
-  /// setters are exposed — consent flows via the GMA privacy APIs and the iOS
-  /// App Tracking Transparency (ATT) status.
-  ///
-  /// ---
-  ///
-  /// ### iOS 14+ requirements (per InMobi guidelines)
-  ///
-  /// | Requirement | How it is handled |
-  /// |-------------|-------------------|
-  /// | **A. Latest SDK** | Managed by the `gma_mediation_inmobi` pub package version — keep it updated in `pubspec.yaml`. |
-  /// | **B. SKAdNetwork attribution** | Handled automatically by the InMobi adapter once SKAN IDs are in `Info.plist` (see C). No code change needed. |
-  /// | **C. SKAdNetwork IDs in Info.plist** | ⚠️ **Manual step** — copy the SKAN ID list from [https://www.inmobi.com/skadnetworkids.xml](https://www.inmobi.com/skadnetworkids.xml) into `Info.plist`. See README for details. |
-  /// | **D. ATT prompt** | ✅ **Automatically handled** by [GmaAllMediations._requestAppTrackingTransparency] when [GmaMediationConfig.enableATT] is `true`. No extra work needed. |
-  /// | **E. iOS 14 demand guide** | Informational — no code action required. InMobi adapts its demand pipeline automatically. |
-  ///
-  /// ### Revenue impact 💶
-  /// InMobi has strong demand in Asia-Pacific, the Middle East, and emerging
-  /// markets. Ensuring ATT is requested (already done by this package) and
-  /// SKAN IDs are in place are the two highest-impact steps for InMobi eCPMs
-  /// on iOS.
-  ///
-  /// See: https://developers.google.com/admob/flutter/mediation/inmobi
-  /// See: https://support.inmobi.com/monetize/sdk-documentation/ios-guidelines/preparing-for-ios-14
   void _applyInMobiConsent({required bool hasConsent, required bool doNotSell}) {
     try {
-      // Registers the InMobi adapter with the GMA mediation chain.
-      // Consent and ATT signals are propagated automatically via the GMA SDK
-      // and the ATT flow already executed in GmaAllMediations._requestAppTrackingTransparency().
       GmaMediationInMobi();
-      GmaLogger.success('InMobi — adapter registered. ATT handled by package.');
+      _GmaLogger.success('InMobi — adapter registered.');
     } catch (e, st) {
-      GmaLogger.error('InMobi consent error', e, st);
+      _GmaLogger.error('InMobi consent error', e, st);
     }
   }
 
   /// Propagates consent to the **Mintegral** mediation adapter.
-  ///
-  /// The `gma_mediation_mintegral` package is an intentionally empty Dart class.
-  /// Instantiating `GmaMediationMintegral()` registers the adapter with the
-  /// Google Mobile Ads SDK mediation chain.
-  ///
-  /// Mintegral (Mobvista) relies on the Google User Messaging Platform (UMP)
-  /// SDK to natively auto-forward GDPR and CCPA consent status.
-  ///
-  /// See: https://developers.google.com/admob/flutter/mediation/mintegral
   void _applyMintegralConsent({required bool hasConsent, required bool doNotSell}) {
     try {
       GmaMediationMintegral();
-      GmaLogger.success('Mintegral — adapter registered. Consent auto-managed natively.');
+      _GmaLogger.success('Mintegral — adapter registered.');
     } catch (e, st) {
-      GmaLogger.error('Mintegral consent error', e, st);
+      _GmaLogger.error('Mintegral consent error', e, st);
     }
   }
 
   /// Propagates consent to the **Moloco** mediation adapter.
-  ///
-  /// The `gma_mediation_moloco` package is an intentionally empty Dart class.
-  /// Instantiating `GmaMediationMoloco()` registers the adapter with the
-  /// Google Mobile Ads SDK mediation chain.
-  ///
-  /// Moloco relies on the Google User Messaging Platform (UMP) SDK to natively
-  /// auto-forward GDPR and CCPA consent status.
-  ///
-  /// See: https://developers.google.com/admob/flutter/mediation/moloco
   void _applyMolocoConsent({required bool hasConsent, required bool doNotSell}) {
     try {
       GmaMediationMoloco();
-      GmaLogger.success('Moloco — adapter registered. Consent auto-managed natively.');
+      _GmaLogger.success('Moloco — adapter registered.');
     } catch (e, st) {
-      GmaLogger.error('Moloco consent error', e, st);
+      _GmaLogger.error('Moloco consent error', e, st);
     }
   }
 
   /// Propagates consent to the **myTarget** mediation adapter.
-  ///
-  /// The `gma_mediation_mytarget` package is an intentionally empty Dart class.
-  /// Instantiating `GmaMediationmytarget()` registers the adapter with the
-  /// Google Mobile Ads SDK mediation chain.
-  ///
-  /// myTarget relies on the Google User Messaging Platform (UMP) SDK to natively
-  /// auto-forward GDPR and CCPA consent status.
-  ///
-  /// See: https://developers.google.com/admob/flutter/mediation/mytarget
   void _applyMyTargetConsent({required bool hasConsent, required bool doNotSell}) {
     try {
       GmaMediationmytarget();
-      GmaLogger.success('myTarget — adapter registered. Consent auto-managed natively.');
+      _GmaLogger.success('myTarget — adapter registered.');
     } catch (e, st) {
-      GmaLogger.error('myTarget consent error', e, st);
+      _GmaLogger.error('myTarget consent error', e, st);
     }
   }
 
   /// Propagates consent to the **Pangle** mediation adapter.
-  ///
-  /// The `gma_mediation_pangle` package is an intentionally empty Dart class.
-  /// Instantiating `GmaMediationPangle()` registers the adapter with the
-  /// Google Mobile Ads SDK mediation chain.
-  ///
-  /// Pangle relies on the Google User Messaging Platform (UMP) SDK to natively
-  /// auto-forward GDPR and CCPA consent status.
-  ///
-  /// See: https://developers.google.com/admob/flutter/mediation/pangle
   void _applyPangleConsent({required bool hasConsent, required bool doNotSell}) {
     try {
       GmaMediationPangle();
-      GmaLogger.success('Pangle — adapter registered. Consent auto-managed natively.');
+      _GmaLogger.success('Pangle — adapter registered.');
     } catch (e, st) {
-      GmaLogger.error('Pangle consent error', e, st);
+      _GmaLogger.error('Pangle consent error', e, st);
     }
   }
 
   /// Propagates consent to the **PubMatic** mediation adapter.
-  ///
-  /// The `gma_mediation_pubmatic` package is an intentionally empty Dart class.
-  /// Instantiating `GmaMediationPubmatic()` registers the adapter with the
-  /// Google Mobile Ads SDK mediation chain.
-  ///
-  /// PubMatic relies on the Google User Messaging Platform (UMP) SDK to natively
-  /// auto-forward GDPR and CCPA consent status.
-  ///
-  /// See: https://developers.google.com/admob/flutter/mediation/pubmatic
   void _applyPubMaticConsent({required bool hasConsent, required bool doNotSell}) {
     try {
       GmaMediationPubmatic();
-      GmaLogger.success('PubMatic — adapter registered. Consent auto-managed natively.');
+      _GmaLogger.success('PubMatic — adapter registered.');
     } catch (e, st) {
-      GmaLogger.error('PubMatic consent error', e, st);
+      _GmaLogger.error('PubMatic consent error', e, st);
     }
   }
 }

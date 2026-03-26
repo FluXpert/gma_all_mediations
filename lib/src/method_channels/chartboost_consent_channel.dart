@@ -1,8 +1,4 @@
-import 'dart:io' show Platform;
-
-import 'package:flutter/services.dart';
-
-import 'logger.dart';
+part of '../internal.dart';
 
 /// Internal MethodChannel bridge that applies Chartboost consent natively.
 ///
@@ -18,8 +14,8 @@ import 'logger.dart';
 ///   `Chartboost.addDataUseConsent(CBCCPADataUseConsent)`.
 /// * **Android** – `GmaAllMediationsPlugin.kt` → no-op; the Chartboost
 ///   Android adapter reads consent automatically via the mediation framework.
-class ChartboostConsentChannel {
-  ChartboostConsentChannel._(); // Prevent instantiation
+class _ChartboostConsentChannel {
+  _ChartboostConsentChannel._(); // Prevent instantiation
 
   static const MethodChannel _channel = MethodChannel('gma_all_mediations/chartboost_consent');
 
@@ -43,12 +39,12 @@ class ChartboostConsentChannel {
       });
     } on MissingPluginException {
       // Occurs in unit-test environments — safe to ignore.
-      GmaLogger.warn(
+      _GmaLogger.warn(
         'ChartboostConsentChannel: MissingPluginException — channel not '
         'registered (likely running in test environment).',
       );
     } catch (e, st) {
-      GmaLogger.error('ChartboostConsentChannel: native call failed', e, st);
+      _GmaLogger.error('ChartboostConsentChannel: native call failed', e, st);
     }
   }
 }
