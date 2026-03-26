@@ -3,7 +3,7 @@ name: build
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
 
 jobs:
@@ -13,4 +13,3 @@ jobs:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1
   pana:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/pana.yml@v1
-    
