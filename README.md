@@ -9,8 +9,8 @@ A zero-config, ultra-robust Flutter package that automatically manages Google Ad
 *   **Zero Native Code**: You do not have to touch any Java, Kotlin, Swift, or Objective-C code for 99% of use cases.
 *   **Auto-Propagating Consent**: Automatically sends GDPR, CCPA, and UMP consent strings to third-party ad networks natively (via the User Messaging Platform).
 *   **App Tracking Transparency (ATT)**: Automatically handles the iOS 14+ ATT prompt and forwards the tracking status directly to the iOS SDKs (like Meta Audience Network).
-*   **Automated Lifecycle Management**: Automatically handles native Activity lifecycle events (`onResume`, `onPause`) required by networks like IronSource.
-*   **Reflection-based Architecture**: You only install the adapters you want. The package uses reflection (`Class.forName`, `NSClassFromString`) to prevent compilation errors for omitted networks.
+<!-- *   **Automated Lifecycle Management**: Automatically handles native Activity lifecycle events (`onResume`, `onPause`) required by networks like IronSource. -->
+<!-- *   **Reflection-based Architecture**: You only install the adapters you want. The package uses reflection (`Class.forName`, `NSClassFromString`) to prevent compilation errors for omitted networks. -->
 
 ---
 
@@ -20,19 +20,19 @@ These are the currently maintained and actively supported mediation adapters.
 
 | Ad Network | Package Dependency | Action Required? | Consent Strategy |
 | :--- | :--- | :--- | :--- |
-| [**AppLovin**](https://developers.google.com/admob/flutter/mediation/applovin) | `gma_mediation_applovin` | ❎ None | Auto-forwarded natively by UMP |
-| [**Chartboost**](https://developers.google.com/admob/flutter/mediation/chartboost) | `gma_mediation_chartboost` | ✅ Gradle repo | Handled natively by UMP + SKAN IDs |
-| [**DT Exchange**](https://developers.google.com/admob/flutter/mediation/dt-exchange) | `gma_mediation_dtexchange` | ❎ None | Auto-forwarded natively by UMP |
-| [**InMobi**](https://developers.google.com/admob/flutter/mediation/inmobi) | `gma_mediation_inmobi` | ❎ None | Auto-forwarded natively by UMP |
-| [**IronSource**](https://developers.google.com/admob/flutter/mediation/ironsource) | `gma_mediation_ironsource` | ✅ Gradle repo | Exact Boolean setter execution (Dart) |
-| [**Liftoff (Vungle)**](https://developers.google.com/admob/flutter/mediation/liftoff-monetize) | `gma_mediation_liftoffmonetize` | ❎ None | Exact Boolean setter execution (Dart) |
+| [**AppLovin**](https://developers.google.com/admob/flutter/mediation/applovin) | `gma_mediation_applovin` | ✅ Info.plist flag | Auto-forwarded natively by UMP |
+| [**Chartboost**](https://developers.google.com/admob/flutter/mediation/chartboost) | `gma_mediation_chartboost` | ✅ Info.plist flag | Handled natively by UMP + SKAN IDs |
+| [**DT Exchange**](https://developers.google.com/admob/flutter/mediation/dt-exchange) | `gma_mediation_dtexchange` | ✅ Info.plist flag | Auto-forwarded natively by UMP |
+| [**InMobi**](https://developers.google.com/admob/flutter/mediation/inmobi) | `gma_mediation_inmobi` | ✅ Info.plist flag | Auto-forwarded natively by UMP |
+| [**IronSource**](https://developers.google.com/admob/flutter/mediation/ironsource) | `gma_mediation_ironsource` | ✅ Info.plist flag | Exact Boolean setter execution (Dart) |
+| [**Liftoff (Vungle)**](https://developers.google.com/admob/flutter/mediation/liftoff-monetize) | `gma_mediation_liftoffmonetize` | ✅ Info.plist flag | Exact Boolean setter execution (Dart) |
 | [**Meta (Facebook)**](https://developers.google.com/admob/flutter/mediation/meta) | `gma_mediation_meta` | ✅ Info.plist flag | UMP + Auto-ATT Tracking execution |
-| [**Mintegral**](https://developers.google.com/admob/flutter/mediation/mintegral) | `gma_mediation_mintegral` | ✅ Gradle repo | Auto-forwarded natively by UMP |
+| [**Mintegral**](https://developers.google.com/admob/flutter/mediation/mintegral) | `gma_mediation_mintegral` | ✅ Info.plist flag | Auto-forwarded natively by UMP |
 | [**Moloco**](https://developers.google.com/admob/flutter/mediation/moloco) | `gma_mediation_moloco` | ❎ None | Auto-forwarded natively by UMP |
-| [**myTarget**](https://developers.google.com/admob/flutter/mediation/mytarget) | `gma_mediation_mytarget` | ❎ None | Auto-forwarded natively by UMP |
-| [**Pangle**](https://developers.google.com/admob/flutter/mediation/pangle) | `gma_mediation_pangle` | ✅ Gradle repo | Auto-forwarded natively by UMP |
-| [**PubMatic**](https://developers.google.com/admob/flutter/mediation/pubmatic) | `gma_mediation_pubmatic` | ✅ Gradle repo | Auto-forwarded natively by UMP |
-| [**Unity Ads**](https://developers.google.com/admob/flutter/mediation/unity) | `gma_mediation_unity` | ❎ None | Auto-forwarded natively by UMP |
+| [**myTarget**](https://developers.google.com/admob/flutter/mediation/mytarget) | `gma_mediation_mytarget` | ✅ Info.plist flag | Auto-forwarded natively by UMP |
+| [**Pangle**](https://developers.google.com/admob/flutter/mediation/pangle) | `gma_mediation_pangle` | ✅ Info.plist flag | Auto-forwarded natively by UMP |
+| [**PubMatic**](https://developers.google.com/admob/flutter/mediation/pubmatic) | `gma_mediation_pubmatic` | ✅ Info.plist flag | Auto-forwarded natively by UMP |
+| [**Unity Ads**](https://developers.google.com/admob/flutter/mediation/unity) | `gma_mediation_unity` | ✅ Info.plist flag | Auto-forwarded natively by UMP |
 
 ---
 
@@ -46,9 +46,6 @@ First, add `gma_all_mediations` along with the mediation packages you plan to us
 dependencies:
   gma_all_mediations: any
   google_mobile_ads: ^7.0.0
-  # Install the specific adapters you want (Optional):
-  gma_mediation_applovin: 2.5.2
-  gma_mediation_meta: 1.5.1
 ```
 
 ### 2. Initialization
@@ -171,10 +168,17 @@ Almost every adapter on iOS relies on `SKAdNetworkItems` for view/click conversi
 > Rather than bloating your `Info.plist` with thousands of lines, always retrieve the **latest** SKAdNetwork XMLs supplied directly by the ad networks you configure. Add them sequentially into the `<key>SKAdNetworkItems</key>` array tag.
 
 * [AppLovin SKAdNetwork IDs](https://skadnetwork-ids.applovin.com/v1/skadnetworkids.xml)
-* [Chartboost SKAdNetwork IDs](https://docs.chartboost.com/en/monetization/ios/integration/)
-* [InMobi SKAdNetwork IDs](https://www.inmobi.com/skadnetworkids.xml)
+* [Chartboost SKAdNetwork IDs](https://docs.chartboost.com/en/monetization/integrate/ios/upgrading-the-sdk/#enable-skadnetwork)
+* [DT Exchange SKAdNetwork IDs](https://docs.digitalturbine.com/dt-fairbid/fairbid-sdk/sdk-reference/skadnetwork-id-auto-updater)
+* [InMobi SKAdNetwork IDs](https://support.inmobi.com/monetize/ios-guidelines/preparing-for-ios-14) - [Info.plist](https://www.inmobi.com/skadnetworkids.xml)
+* [IronSource SKAdNetwork IDs](https://developers.ironsrc.com/ironsource-mobile/ios/ios-14-network-support/)
+* [Liftoff Monetize SKAdNetwork IDs](https://support.vungle.com/hc/en-us/articles/360002925791-Integrate-Vungle-SDK-for-iOS#h_01GWQTCFD182A6NRBT9PZ96FXY) - [Info.plist](https://vungle-static-assets.s3.amazonaws.com/dashboard/admin/prod/skadnetworkids.xml)
 * [Meta SKAdNetwork IDs](https://developers.facebook.com/docs/setting-up/platform-setup/ios/SKAdNetwork)
 * [Mintegral SKAdNetwork IDs](https://dev.mintegral.com/doc/index.html?file=sdk-m_sdk-ios&lang=en)
+* [myTarget SKAdNetwork IDs](https://target.my.com/help/partners/mob/ios14integration/en)
+* [Pangle SKAdNetwork IDs](https://pangleglobal.com/integration/ios14-readiness)
+* [PubMatic SKAdNetwork IDs](https://help.pubmatic.com/openwrap/reference/home-get-started-with-ios-openwrap-sdk-as-primary-ad-sdk#configure-skadnetwork-settings-to-track-conversions)
+* [Unity Ads SKAdNetwork IDs](https://docs.unity.com/en-us/grow/ads/ios-sdk/ios14/configure-ad-network-ids)
 
 ---
 
