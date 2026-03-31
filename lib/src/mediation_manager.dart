@@ -54,7 +54,7 @@ class _MediationManager {
     _applyAppLovinConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyUnityConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     await _applyChartboostConsent(hasConsent: hasConsent, doNotSell: doNotSell);
-    _applyDTExchange(hasConsent: hasConsent, doNotSell: doNotSell);
+    await _applyDTExchange(hasConsent: hasConsent, doNotSell: doNotSell);
     await _applyIronSourceConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyLiftoffConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyMetaConsent(hasConsent: hasConsent, doNotSell: doNotSell);

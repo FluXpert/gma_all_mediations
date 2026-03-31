@@ -3,6 +3,7 @@
 ## 0.0.4
 
 * **Fix:** Ensured that `initialize()` properly awaits the completion of UMP consent flows. This fixes an issue where the initialisation method would return prematurely before the UMP consent form interactions and the subsequent mobile ads initialisation were completed.
+* **Fix:** Added missing `await` to `_applyDTExchange` in the mediation manager to ensure the DT Exchange SDK native setup finishes before proceeding.
 
 ## 0.0.3
 
