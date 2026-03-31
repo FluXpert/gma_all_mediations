@@ -70,6 +70,7 @@ class GmaAllMediations {
   /// called so ads are always loaded — even when the user dismisses the form.
   Future<void> _requestConsentAndInitialise() async {
     _GmaLogger.info('Requesting UMP consent info update…');
+    final Completer<void> completer = Completer<void>();
 
     ConsentInformation.instance.requestConsentInfoUpdate(
       _resolvedConfig.consentRequestParameters ?? ConsentRequestParameters(),
@@ -83,6 +84,7 @@ class GmaAllMediations {
           _GmaLogger.info('No consent form required — proceeding to ad init.');
           await _initializeAdsSdk();
         }
+        completer.complete();
       },
       (FormError requestError) async {
         // Non-fatal: log the error and continue so revenue is not blocked.
@@ -91,13 +93,17 @@ class GmaAllMediations {
           'Proceeding without consent form.',
         );
         await _initializeAdsSdk();
+        completer.complete();
       },
     );
+
+    return completer.future;
   }
 
   /// Loads and shows the UMP consent form, then proceeds to init ads.
   Future<void> _loadAndShowConsentForm() async {
     _GmaLogger.info('Loading UMP consent form…');
+    final Completer<void> completer = Completer<void>();
 
     ConsentForm.loadAndShowConsentFormIfRequired((FormError? formError) async {
       if (formError != null) {
@@ -112,7 +118,10 @@ class GmaAllMediations {
 
       // Always proceed to ad initialisation after the form interaction.
       await _initializeAdsSdk();
+      completer.complete();
     });
+
+    return completer.future;
   }
 
   /// Step 3 + 4: Applies ATT (iOS), mediation consent, then inits AdMob.

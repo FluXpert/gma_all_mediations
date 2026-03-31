@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.0.4
+
+* **Fix:** Ensured that `initialize()` properly awaits the completion of UMP consent flows. This fixes an issue where the initialisation method would return prematurely before the UMP consent form interactions and the subsequent mobile ads initialisation were completed.
+
 ## 0.0.3
 
 * **Maintenance Release**: Updated package version to refresh and fix pending analysis on pub.dev.
