@@ -150,8 +150,7 @@ class GmaAllMediations {
 
     _GmaLogger.info('Requesting App Tracking Transparency authorisation…');
     try {
-      final TrackingStatus status =
-          await AppTrackingTransparency.requestTrackingAuthorization();
+      final TrackingStatus status = await AppTrackingTransparency.requestTrackingAuthorization();
       _GmaLogger.info('ATT status: $status');
 
       final bool isAuthorized = status == TrackingStatus.authorized;
@@ -162,9 +161,7 @@ class GmaAllMediations {
       if (isAuthorized) {
         _GmaLogger.success('ATT granted — personalised iOS ads enabled.');
       } else {
-        _GmaLogger.warn(
-          'ATT not granted ($status). iOS ads may be limited in targeting.',
-        );
+        _GmaLogger.warn('ATT not granted ($status). iOS ads may be limited in targeting.');
       }
     } catch (e, st) {
       _GmaLogger.error('ATT request failed', e, st);
@@ -184,9 +181,7 @@ class GmaAllMediations {
   Future<void> _startMobileAdsSdk() async {
     _GmaLogger.info('Initialising Google Mobile Ads SDK…');
     try {
-      MobileAds.instance.updateRequestConfiguration(
-        _resolvedConfig.requestConfiguration,
-      );
+      MobileAds.instance.updateRequestConfiguration(_resolvedConfig.requestConfiguration);
       final InitializationStatus status = await MobileAds.instance.initialize();
       _logAdapterInitStatus(status);
       _GmaLogger.success('Mobile Ads SDK initialised successfully.');
@@ -206,10 +201,7 @@ class GmaAllMediations {
     if (!_resolvedConfig.debug) return;
 
     debugPrint('[GMA] Adapter initialisation status:');
-    status.adapterStatuses.forEach((
-      String adapter,
-      AdapterStatus adapterStatus,
-    ) {
+    status.adapterStatuses.forEach((String adapter, AdapterStatus adapterStatus) {
       debugPrint(
         '[GMA]   • $adapter → ${adapterStatus.state.name} '
         '(${adapterStatus.description})',

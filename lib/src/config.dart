@@ -124,12 +124,9 @@ class GmaMediationConfig {
     String? maxAdContentRating,
     this.consentRequestParameters,
   }) : tagForChildDirectedTreatment =
-           tagForChildDirectedTreatment ??
-           TagForChildDirectedTreatment.unspecified,
-       tagForUnderAgeOfConsent =
-           tagForUnderAgeOfConsent ?? TagForUnderAgeOfConsent.unspecified,
-       maxAdContentRating =
-           maxAdContentRating ?? MaxAdContentRating.unspecified {
+           tagForChildDirectedTreatment ?? TagForChildDirectedTreatment.unspecified,
+       tagForUnderAgeOfConsent = tagForUnderAgeOfConsent ?? TagForUnderAgeOfConsent.unspecified,
+       maxAdContentRating = maxAdContentRating ?? MaxAdContentRating.unspecified {
     requestConfiguration = RequestConfiguration(
       tagForChildDirectedTreatment: this.tagForChildDirectedTreatment,
       tagForUnderAgeOfConsent: this.tagForUnderAgeOfConsent,

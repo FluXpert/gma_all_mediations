@@ -14,10 +14,7 @@ void main() {
       expect(config.forceMediationConsent, isFalse);
       expect(config.doNotSell, isFalse);
       expect(config.testDeviceIds, isEmpty);
-      expect(
-        config.tagForChildDirectedTreatment,
-        equals(TagForChildDirectedTreatment.unspecified),
-      );
+      expect(config.tagForChildDirectedTreatment, equals(TagForChildDirectedTreatment.unspecified));
     });
 
     test('builds RequestConfiguration correctly', () {
@@ -29,10 +26,7 @@ void main() {
 
       final req = config.requestConfiguration;
       expect(req.testDeviceIds, contains('test-id'));
-      expect(
-        req.tagForChildDirectedTreatment,
-        equals(TagForChildDirectedTreatment.yes),
-      );
+      expect(req.tagForChildDirectedTreatment, equals(TagForChildDirectedTreatment.yes));
       expect(req.maxAdContentRating, equals(MaxAdContentRating.pg));
     });
   });
@@ -43,36 +37,32 @@ void main() {
     setUp(() {
       log.clear();
       // Intercept calls to our custom channels
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(
-            const MethodChannel('gma_all_mediations/chartboost_consent'),
-            (MethodCall methodCall) async {
-              log.add(methodCall);
-              return null;
-            },
-          );
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+        const MethodChannel('gma_all_mediations/chartboost_consent'),
+        (MethodCall methodCall) async {
+          log.add(methodCall);
+          return null;
+        },
+      );
 
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(
-            const MethodChannel('gma_all_mediations/meta_consent'),
-            (MethodCall methodCall) async {
-              log.add(methodCall);
-              return null;
-            },
-          );
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+        const MethodChannel('gma_all_mediations/meta_consent'),
+        (MethodCall methodCall) async {
+          log.add(methodCall);
+          return null;
+        },
+      );
     });
 
     tearDown(() {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(
-            const MethodChannel('gma_all_mediations/chartboost_consent'),
-            null,
-          );
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(
-            const MethodChannel('gma_all_mediations/meta_consent'),
-            null,
-          );
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+        const MethodChannel('gma_all_mediations/chartboost_consent'),
+        null,
+      );
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+        const MethodChannel('gma_all_mediations/meta_consent'),
+        null,
+      );
     });
 
     /// Note: Since the channel classes are private (_), we test them
