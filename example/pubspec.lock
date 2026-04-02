@@ -81,7 +81,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.0.2"
+    version: "0.0.4"
   gma_mediation_applovin:
     dependency: transitive
     description:
@@ -90,22 +90,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.2"
-  gma_mediation_chartboost:
-    dependency: transitive
-    description:
-      name: gma_mediation_chartboost
-      sha256: baa0964d7e3755fd7720ccac3a11daeada9a3f5e98afe0d2a3193319cb9c929f
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.1"
-  gma_mediation_dtexchange:
-    dependency: transitive
-    description:
-      name: gma_mediation_dtexchange
-      sha256: "2b2c6c2cabf5db1b692188bcb95e0ea594ae77e619384a21e87037e5fbd91962"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.3.3"
   gma_mediation_inmobi:
     dependency: transitive
     description:
@@ -138,46 +122,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
-  gma_mediation_mintegral:
-    dependency: transitive
-    description:
-      name: gma_mediation_mintegral
-      sha256: a7ea37a5b72c9639c83acbf2bd0ad8b551e8dfda811a74def3f6a0fb7742d194
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.3"
-  gma_mediation_moloco:
-    dependency: transitive
-    description:
-      name: gma_mediation_moloco
-      sha256: e8002e51e0396282936e2cdaf3197a750deb65b70b268f1c0641efcd91e79658
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.3.0"
-  gma_mediation_mytarget:
-    dependency: transitive
-    description:
-      name: gma_mediation_mytarget
-      sha256: "22370699d857f92fdd88b68e77cafa9987dc536f70063734fcb388470c5f9c5d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.8.0"
-  gma_mediation_pangle:
-    dependency: transitive
-    description:
-      name: gma_mediation_pangle
-      sha256: "1454d1dff61fffb21499d3c1c9403a2de3822c7da4dca9a9db7f6aed1bf740cf"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.5.3"
-  gma_mediation_pubmatic:
-    dependency: transitive
-    description:
-      name: gma_mediation_pubmatic
-      sha256: "99dc3979bc56a4da06100a4372bd3fdee63373f2fb43f3a22d15dd0eea1855cb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.5.0"
   gma_mediation_unity:
     dependency: transitive
     description:
