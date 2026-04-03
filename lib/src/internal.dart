@@ -8,8 +8,8 @@ import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter/services.dart';
 // Adapter imports
 import 'package:gma_mediation_applovin/gma_mediation_applovin.dart';
-// import 'package:gma_mediation_chartboost/gma_mediation_chartboost.dart';
-// import 'package:gma_mediation_dtexchange/gma_mediation_dtexchange.dart';
+import 'package:gma_mediation_chartboost/gma_mediation_chartboost.dart';
+import 'package:gma_mediation_dtexchange/gma_mediation_dtexchange.dart';
 import 'package:gma_mediation_inmobi/gma_mediation_inmobi.dart';
 import 'package:gma_mediation_ironsource/gma_mediation_ironsource.dart';
 import 'package:gma_mediation_liftoffmonetize/gma_mediation_liftoffmonetize.dart';

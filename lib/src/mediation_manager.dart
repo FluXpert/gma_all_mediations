@@ -124,7 +124,7 @@ class _MediationManager {
   Future<void> _applyChartboostConsent({required bool hasConsent, required bool doNotSell}) async {
     try {
       // Step 1: register adapter with the GMA mediation chain.
-      // GmaMediationChartboost();
+      GmaMediationChartboost();
 
       // Step 2: fire native consent via MethodChannel.
       await _ChartboostConsentChannel.applyConsent(hasConsent: hasConsent, doNotSell: doNotSell);
@@ -142,13 +142,13 @@ class _MediationManager {
   Future<void> _applyDTExchange({
     required bool hasConsent,
     required bool doNotSell,
-    // String? usPrivacyStringData,
+    String? usPrivacyStringData,
   }) async {
     try {
-      // final String derivedPrivacyString = doNotSell ? '1YYN' : '1YNN';
-      // final String effectivePrivacyString = usPrivacyStringData ?? derivedPrivacyString;
-      // await GmaMediationDTExchange().setUSPrivacyString(effectivePrivacyString);
-      // await GmaMediationDTExchange().setLgpdConsent(hasConsent);
+      final String derivedPrivacyString = doNotSell ? '1YYN' : '1YNN';
+      final String effectivePrivacyString = usPrivacyStringData ?? derivedPrivacyString;
+      await GmaMediationDTExchange().setUSPrivacyString(effectivePrivacyString);
+      await GmaMediationDTExchange().setLgpdConsent(hasConsent);
 
       _GmaLogger.success('DT Exchange — consent applied.');
     } catch (e, st) {
