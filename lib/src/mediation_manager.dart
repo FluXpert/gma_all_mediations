@@ -54,7 +54,7 @@ class _MediationManager {
     _applyAppLovinConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyUnityConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     await _applyChartboostConsent(hasConsent: hasConsent, doNotSell: doNotSell);
-    await _applyDTExchange(hasConsent: hasConsent, doNotSell: doNotSell);
+    // await _applyDTExchange(hasConsent: hasConsent, doNotSell: doNotSell);
     await _applyIronSourceConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyLiftoffConsent(hasConsent: hasConsent, doNotSell: doNotSell);
     _applyMetaConsent(hasConsent: hasConsent, doNotSell: doNotSell);
@@ -138,23 +138,22 @@ class _MediationManager {
     }
   }
 
-  /// Propagates consent signals to the **DT Exchange (Fyber)** mediation adapter.
-  Future<void> _applyDTExchange({
-    required bool hasConsent,
-    required bool doNotSell,
-    String? usPrivacyStringData,
-  }) async {
-    try {
-      final String derivedPrivacyString = doNotSell ? '1YYN' : '1YNN';
-      final String effectivePrivacyString = usPrivacyStringData ?? derivedPrivacyString;
-      await GmaMediationDTExchange().setUSPrivacyString(effectivePrivacyString);
-      await GmaMediationDTExchange().setLgpdConsent(hasConsent);
+  // Future<void> _applyDTExchange({
+  //   required bool hasConsent,
+  //   required bool doNotSell,
+  //   String? usPrivacyStringData,
+  // }) async {
+  //   try {
+  //     final String derivedPrivacyString = doNotSell ? '1YYN' : '1YNN';
+  //     final String effectivePrivacyString = usPrivacyStringData ?? derivedPrivacyString;
+  //     await GmaMediationDTExchange().setUSPrivacyString(effectivePrivacyString);
+  //     await GmaMediationDTExchange().setLgpdConsent(hasConsent);
 
-      _GmaLogger.success('DT Exchange — consent applied.');
-    } catch (e, st) {
-      _GmaLogger.error('DT Exchange consent error', e, st);
-    }
-  }
+  //     _GmaLogger.success('DT Exchange — consent applied.');
+  //   } catch (e, st) {
+  //     _GmaLogger.error('DT Exchange consent error', e, st);
+  //   }
+  // }
 
   /// Propagates GDPR and CCPA consent to the **IronSource (LevelPlay)**
   Future<void> _applyIronSourceConsent({required bool hasConsent, required bool doNotSell}) async {
