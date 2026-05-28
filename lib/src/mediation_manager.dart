@@ -124,7 +124,7 @@ class _MediationManager {
   Future<void> _applyChartboostConsent({required bool hasConsent, required bool doNotSell}) async {
     try {
       // Step 1: register adapter with the GMA mediation chain.
-      GmaMediationChartboost();
+      // GmaMediationChartboost();
 
       // Step 2: fire native consent via MethodChannel.
       await _ChartboostConsentChannel.applyConsent(hasConsent: hasConsent, doNotSell: doNotSell);
@@ -190,7 +190,7 @@ class _MediationManager {
   /// Propagates consent to the **InMobi** mediation adapter.
   void _applyInMobiConsent({required bool hasConsent, required bool doNotSell}) {
     try {
-      GmaMediationInMobi();
+      // GmaMediationInMobi();
       _GmaLogger.success('InMobi — adapter registered.');
     } catch (e, st) {
       _GmaLogger.error('InMobi consent error', e, st);
