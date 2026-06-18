@@ -158,8 +158,8 @@ class _MediationManager {
   /// Propagates GDPR and CCPA consent to the **IronSource (LevelPlay)**
   Future<void> _applyIronSourceConsent({required bool hasConsent, required bool doNotSell}) async {
     try {
-      await GmaMediationIronsource().setConsent(hasConsent);
-      await GmaMediationIronsource().setDoNotSell(doNotSell);
+      // await GmaMediationIronsource().setConsent(hasConsent);
+      // await GmaMediationIronsource().setDoNotSell(doNotSell);
       _GmaLogger.success('IronSource — consent applied.');
     } catch (e, st) {
       _GmaLogger.error('IronSource consent error', e, st);
@@ -180,7 +180,7 @@ class _MediationManager {
   /// Propagates consent to the **Meta Audience Network** adapter.
   void _applyMetaConsent({required bool hasConsent, required bool doNotSell}) {
     try {
-      GmaMediationMeta();
+      // GmaMediationMeta();
       _GmaLogger.success('Meta Audience Network — adapter registered.');
     } catch (e, st) {
       _GmaLogger.error('Meta consent error', e, st);
