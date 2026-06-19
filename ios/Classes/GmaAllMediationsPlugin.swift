@@ -18,9 +18,23 @@
 // empty Dart class — Google's design delegated consent to native.
 // This plugin closes that gap so Flutter consumers have zero AppDelegate work.
 
-import ChartboostSDK
 import Flutter
 import UIKit
+
+@objc protocol DynamicCHBGDPRDataUseConsent: NSObjectProtocol {
+  @objc(initWithValue:)
+  init(_ value: Int)
+}
+
+@objc protocol DynamicCHBCCPADataUseConsent: NSObjectProtocol {
+  @objc(initWithValue:)
+  init(_ value: Int)
+}
+
+@objc protocol DynamicChartboost: NSObjectProtocol {
+  @objc(addDataUseConsent:)
+  static func addDataUseConsent(_ consent: AnyObject)
+}
 
 /// Flutter plugin that bridges Chartboost consent from Dart to the
 /// Chartboost iOS SDK.
@@ -86,21 +100,25 @@ public class GmaAllMediationsPlugin: NSObject, FlutterPlugin {
       return
     }
 
+    // Safely look up Chartboost classes via runtime reflection.
+    // If the app does not link ChartboostSDK, this silently does nothing.
+    guard let chartboostClass = NSClassFromString("Chartboost") as? DynamicChartboost.Type,
+          let gdprClass = NSClassFromString("CHBGDPRDataUseConsent") as? DynamicCHBGDPRDataUseConsent.Type,
+          let ccpaClass = NSClassFromString("CHBCCPADataUseConsent") as? DynamicCHBCCPADataUseConsent.Type
+    else {
+      result(nil)
+      return
+    }
+
     // ── GDPR ──────────────────────────────────────────────────────────────
-    // CHBDataUseConsent.GDPR(.behavioral)  → personalised ads (user consented)
-    // CHBDataUseConsent.GDPR(.nonBehavioral) → contextual ads only (no consent)
-    let gdprConsent = CHBDataUseConsent.GDPR(
-      hasConsent ? .behavioral : .nonBehavioral
-    )
-    Chartboost.addDataUseConsent(gdprConsent)
+    // 0 = non-behavioral, 1 = behavioral
+    let gdprConsent = gdprClass.init(hasConsent ? 1 : 0)
+    chartboostClass.addDataUseConsent(gdprConsent)
 
     // ── CCPA ──────────────────────────────────────────────────────────────
-    // CHBDataUseConsent.CCPA(.optInSale)  → user allows sale of personal data
-    // CHBDataUseConsent.CCPA(.optOutSale) → "Do Not Sell" (user opted out)
-    let ccpaConsent = CHBDataUseConsent.CCPA(
-      doNotSell ? .optOutSale : .optInSale
-    )
-    Chartboost.addDataUseConsent(ccpaConsent)
+    // 0 = opt-in sale, 1 = opt-out sale
+    let ccpaConsent = ccpaClass.init(doNotSell ? 1 : 0)
+    chartboostClass.addDataUseConsent(ccpaConsent)
 
     result(nil) // Success
   }

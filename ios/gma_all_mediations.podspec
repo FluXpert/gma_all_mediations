@@ -23,7 +23,7 @@ Pod::Spec.new do |s|
   # Chartboost mediation adapter — brings in the Chartboost SDK which exposes
   # CBGDPRDataUseConsent and CBCCPADataUseConsent used in GmaAllMediationsPlugin.swift.
   # Version kept in sync with gma_mediation_chartboost's podspec requirement.
-  s.dependency 'GoogleMobileAdsMediationChartboost', '~> 9.11.0'
+  # s.dependency 'GoogleMobileAdsMediationChartboost', '~> 9.11.0'
 
   s.pod_target_xcconfig = {
     'DEFINES_MODULE' => 'YES',
